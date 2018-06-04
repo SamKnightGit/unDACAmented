@@ -1,0 +1,17 @@
+p.credits{
+  font-size:14px;
+  margin-top:6px;
+  margin-bottom:4px;
+}
+
+p.label{
+  margin-bottom: 2px;
+}
+p.label_selected{
+  margin-bottom: 2px;
+  font-weight: bold;
+}
+ul.credits{
+  margin-top:4px;
+  font-size:12px;
+}
