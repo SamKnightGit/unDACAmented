@@ -1,86 +1,87 @@
 <html>
-  <head>
-    <!-- Meta Tag -->
-    <meta charset="utf-8">
-    <title>unDACAmented</title>
+	<head>
+		<!-- Meta Tag -->
+		<meta charset="utf-8">
+		<title>unDACAmented</title>
 
-    <!-- Materialize CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
-    <!-- Materialize JavaScript -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
-    <!-- jQuery -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-            
+		<!-- Materialize CSS -->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
+		<!-- Materialize JavaScript -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
+		<!-- jQuery -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
-    <!-- CSS Stylesheet -->
-    <link rel="stylesheet" type="text/css" href="index.css">
-    <!-- D3.js Source -->
-    <script type="text/javascript" src="https://d3js.org/d3.v4.min.js"></script>
-    <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
-    <script type="text/javascript" src="visualization.js"></script>
-  </head>
-  <body>  
-    <script type="text/javascript" src="index.js"></script>
-    <div class="container">
-      <h1 style="text-align: center"><b>Life unDACAmented: <br/> an American Story</b></h1>
-      <p>The DACA program, "Deferred Action for Childhood Arrivals", first began accepting applicants under then president Barack Obama in 2012. It protected children brought to the U.S. illegally from immediate deportation, and allowed these childhood arrivals the opportunity to pursue legal work. </p>   
-      
-      <div class="section row center">
-        <div class="col s4">
-          <p id="Origin_Label" class="label label_selected">Where we come from</p>
-          <a id="Origin_Btn" class="btn-floating waves-effect waves-light blue"></a>
-        </div>
-        <div class="col s4">
-          <p id="Integration_Label" class="label">Where we are</p>
-          <a id="Integration_Btn" class="btn-floating waves-effect waves-light grey"></a>
-        </div>
-        <div id="GDP" class="col s4">
-          <p id="GDP_Label" class="label">Where we are going</p>
-          <a id="GDP_Btn" class="btn-floating waves-effect waves-light grey"></a>
-        </div>
-      </div>
-      <div id="visuals" class="section">
-        
-      </div>
-      <div class="section center-align" >
-        <p class=credits> Created By </p>
-        <ul class="credits">
-          <li>Vien Van (vhvan@ucsc.edu)</li>
-          <li>Samuel Knight (sdknight@ucsc.edu)</li>
-          <li>In collaboration with Suresh K Lodha</li>
-        </ul>
-        <p><a href="https://github.com/SamKnightGit/unDACAmented">Github Link</a></p>
-        <p>Designed for CMPS 165: Data programming for Visualization, Spring 2018</p>
-        
-      </div>
-      <div class="divider"></div>
-      <div class="section row">
-        <div class="col s3">
-          <p>Files:</p>
-          <ul>
-          </ul>
-        </div>
-        <div class="col s3">
-          <p>Data Sources:</p>
-          <ul>
-            <li><a href="https://gist.github.com/hrbrmstr/91ea5cc9474286c72838?short_path=f3fde31"></a></li>
-          </ul>
-        </div>
-        <div class="col s3">
-          <p>Relevant Visualizations:</p>
-          <ul>
-            
-          </ul>
-        </div>
-        <div class="col s3">
-          <p>Code Sources:</p>
-          <ul>
-            <li><a href="http://bl.ocks.org/palewire/d2906de347a160f38bc0b7ca57721328"></a></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    
-    
-  </body>
+
+		<!-- CSS Stylesheet -->
+		<link rel="stylesheet" type="text/css" href="index.css">
+		<!-- D3.js Source -->
+		<script type="text/javascript" src="https://d3js.org/d3.v4.min.js"></script>
+		<script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
+		<script type="text/javascript" src="visualization.js"></script>
+		<script type="text/javascript" src="draw_gdp.js"></script>
+	</head>
+	<body>
+		<script type="text/javascript" src="index.js"></script>
+		<div class="container">
+			<h1 style="text-align: center"><b>Life unDACAmented: <br/> an American Story</b></h1>
+			<p>The DACA program, "Deferred Action for Childhood Arrivals", first began accepting applicants under then president Barack Obama in 2012. It protected children brought to the U.S. illegally from immediate deportation, and allowed these childhood arrivals the opportunity to pursue legal work. </p>
+
+			<div class="section row center">
+				<div class="col s4">
+					<p id="Origin_Label" class="label label_selected">Where we come from</p>
+					<a id="Origin_Btn" class="btn-floating waves-effect waves-light blue"></a>
+				</div>
+				<div class="col s4">
+					<p id="Integration_Label" class="label">Where we are</p>
+					<a id="Integration_Btn" class="btn-floating waves-effect waves-light grey"></a>
+				</div>
+				<div id="GDP" class="col s4">
+					<p id="GDP_Label" class="label">Where we are going</p>
+					<a id="GDP_Btn" class="btn-floating waves-effect waves-light grey"></a>
+				</div>
+			</div>
+			<div id="visuals" class="section">
+
+			</div>
+			<div class="section center-align" >
+				<p class=credits> Created By </p>
+				<ul class="credits">
+					<li>Vien Van (vhvan@ucsc.edu)</li>
+					<li>Samuel Knight (sdknight@ucsc.edu)</li>
+					<li>In collaboration with Suresh K Lodha</li>
+				</ul>
+				<p><a href="https://github.com/SamKnightGit/unDACAmented">Github Link</a></p>
+				<p>Designed for CMPS 165: Data programming for Visualization, Spring 2018</p>
+
+			</div>
+			<div class="divider"></div>
+			<div class="section row">
+				<div class="col s3">
+					<p>Files:</p>
+					<ul>
+					</ul>
+				</div>
+				<div class="col s3">
+					<p>Data Sources:</p>
+					<ul>
+						<li><a href="https://gist.github.com/hrbrmstr/91ea5cc9474286c72838?short_path=f3fde31"></a></li>
+					</ul>
+				</div>
+				<div class="col s3">
+					<p>Relevant Visualizations:</p>
+					<ul>
+
+					</ul>
+				</div>
+				<div class="col s3">
+					<p>Code Sources:</p>
+					<ul>
+						<li><a href="http://bl.ocks.org/palewire/d2906de347a160f38bc0b7ca57721328"></a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+
+	</body>
 </html>
