@@ -69,11 +69,11 @@ function get_max_pop(pop_object) {
 var selected_state = null;
 
 function draw_origin() {
+  
   function clear_america() {
     if (selected_state) {
       america_svg.selectAll("path")
         .style("fill", function(d) {
-          console.log(d);
           if(d.id == selected_state.id) {
             return "2196F3";
           }
@@ -92,6 +92,26 @@ function draw_origin() {
     america_svg.selectAll("path")
       .style("fill", "2196F3");
   } 
+  
+  function redraw_world() {
+    if (selected_state) {
+      build_pop(selected_state.properties.unauthorized_pop);
+      build_percentage(unauthorized_pop, get_total_pop(unauthorized_pop));
+    }
+    else {
+      build_percentage(total_unauthorized_pop, get_total_pop(total_unauthorized_pop));
+    }
+    world_svg.selectAll("path")
+      .style("fill", function (d) {
+        var region = d.properties.name;
+        if (region == "united_states") {
+          return "grey";
+        }
+        else {
+          return color(unauthorized_percentage[region]);
+        }
+      });
+  }
   
   d3.select("svg").remove();
   
@@ -121,11 +141,23 @@ function draw_origin() {
   var world_path = d3.geoPath()
       .projection(world_projection);
 
-  var g = world_svg.append("g")
+  var title = america_svg.append("g")
+    .attr("transform", "translate(0,15)");
+  
+  var title_text = title.append("text")
+    .attr("class", "title")
+    .attr("x", 235)
+    .attr("y", 20)
+    .attr("fill", "#000")
+    .attr("text-anchor", "start")
+    .attr("font-weight", "bold")
+    .text("Undocumented Immigrants in the United States");
+
+  var key = world_svg.append("g")
       .attr("class", "key")
       .attr("transform", "translate(0,15)");
 
-  g.selectAll("rect")
+  key.selectAll("rect")
     .data(color.range().map(function(d) {
       d = color.invertExtent(d);
       return d;
@@ -136,7 +168,7 @@ function draw_origin() {
       .attr("width", 40)
       .attr("fill", function(d, i) { return color(d[0]); });
 
-  g.append("text")
+  key.append("text")
       .attr("class", "caption")
       .attr("x", 1000)
       .attr("y", -6)
@@ -145,7 +177,7 @@ function draw_origin() {
       .attr("font-weight", "bold")
       .text("Percentage of Undocumented Immigrants from Region");
 
-  g.call(d3.axisBottom(key_scale)
+  key.call(d3.axisBottom(key_scale)
       .tickSize(13)
       .tickFormat(function(x) {
           return d3.format(".2s")(x) + "%";
@@ -179,7 +211,6 @@ function draw_origin() {
       }
       
       if (error) throw error;
-      console.log(json)
       america_svg.selectAll("path")
         .data(json.features)
         .enter().append("path")
@@ -207,17 +238,20 @@ function draw_origin() {
         .on("mousedown", function(d) {
           if (!selected_state) {
             selected_state = d;
+            title_text.text("Undocumented Immigrants in " + d.properties.name);
           }
           else {
             if (d.id == selected_state.id) {
               selected_state = null;
+              title_text.text("Undocumented Immigrants in the United States")
             }
             else {
               selected_state = d;
+              title_text.text("Undocumented Immigrants in " + d.properties.name);
             }
           }
-          
           clear_america();
+          redraw_world();
         });
     });       
   });
@@ -230,7 +264,6 @@ function draw_origin() {
       .enter().append("path")
       .attr("d", world_path)
       .style("stroke", "grey")
-      .style("fill", "white")
       .style("fill", function(d) {
         var region = d.properties.name;
         if (region == "united_states") {
@@ -238,6 +271,37 @@ function draw_origin() {
         }
         else {
           return color(unauthorized_percentage[region]);
+        }
+      })
+      .on("mouseover", function(d) {
+        if (d.properties.name != "united_states") {
+          if (d.properties.name == "oceania") {
+            world_svg.selectAll("path")
+              .style("stroke", function(d) {
+                if (d.properties.name == "oceania") {
+                  return "black";
+                }
+                else {
+                  return "grey";
+                } 
+              });
+          }
+          else {
+            d3.select(this)
+              .style("stroke", "black");
+          } 
+        }
+      })
+      .on("mouseout", function(d) {
+        if (d.properties.name != "united_states") {
+          if (d.properties.name == "oceania") {
+            world_svg.selectAll("path")
+              .style("stroke", "grey");
+          }
+          else {
+            d3.select(this)
+              .style("stroke", "grey");
+          } 
         }
       });
   }); 
