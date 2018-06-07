@@ -12,6 +12,9 @@ var total_unauthorized_pop = {
   "oceania":22680
 };
 
+var unauthorized_pop = {
+}
+
 var unauthorized_percentage = {
 }
 
@@ -24,6 +27,14 @@ var color = d3.scaleQuantile()
 var key_scale = d3.scaleLinear()
   .domain([0, 10, 20, 30, 40])
   .rangeRound([1025, 1065]);
+
+function build_pop(state_pop) {
+  for (var property in state_pop) {
+    if (state_pop.hasOwnProperty(property)) {
+      unauthorized_pop[property] = state_pop[property];
+    }
+  } 
+}
 
 function build_percentage(pop_object, total) {
   for (var property in pop_object) {
@@ -42,6 +53,7 @@ function get_total_pop(pop_object) {
   }
   return sum;
 }
+
 function get_max_pop(pop_object) {
   var max = 0;
   for (var property in pop_object) {
@@ -54,7 +66,33 @@ function get_max_pop(pop_object) {
   return max;
 }
 
+var selected_state = null;
+
 function draw_origin() {
+  function clear_america() {
+    if (selected_state) {
+      america_svg.selectAll("path")
+        .style("fill", function(d) {
+          console.log(d);
+          if(d.id == selected_state.id) {
+            return "2196F3";
+          }
+          else {
+            return "white";
+          }
+      });
+    }
+    else {
+      america_svg.selectAll("path")
+        .style("fill", "white");
+    }
+  }
+  
+  function fill_america() {
+    america_svg.selectAll("path")
+      .style("fill", "2196F3");
+  } 
+  
   d3.select("svg").remove();
   
   var svg_canvas = d3.select("#visuals").append("svg")
@@ -105,7 +143,7 @@ function draw_origin() {
       .attr("fill", "#000")
       .attr("text-anchor", "start")
       .attr("font-weight", "bold")
-      .text("Percentage of Unauthorized Immigrants from Region");
+      .text("Percentage of Undocumented Immigrants from Region");
 
   g.call(d3.axisBottom(key_scale)
       .tickSize(13)
@@ -148,14 +186,39 @@ function draw_origin() {
         .attr("d", us_path)
         .style("stroke", "grey")
         .style("fill", "2196F3")
-        .on("mouseover", function(d) {
+        .on("mouseover", function() {
+          clear_america();
           d3.select(this)
             .style("fill", "2196F3");
         })
         .on("mouseout", function(d) {
           d3.select(this)
             .style("fill", "white");
-        });   
+          if (!selected_state) {
+            fill_america();
+          }
+          else {
+            if(d.id == selected_state.id) {
+              d3.select(this)
+                .style("fill", "2196F3")
+            }
+          }
+        })
+        .on("mousedown", function(d) {
+          if (!selected_state) {
+            selected_state = d;
+          }
+          else {
+            if (d.id == selected_state.id) {
+              selected_state = null;
+            }
+            else {
+              selected_state = d;
+            }
+          }
+          
+          clear_america();
+        });
     });       
   });
 
