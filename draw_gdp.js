@@ -1,23 +1,41 @@
-var width=960;
-var height=600;
+var width=1200;
+var height=550;
 function draw_gdp() {
-	d3.select("svg").remove();
+	// d3.select("#visuals").remove();
+	// d3.select("svg").remove();
+	// d3.select(".timeline").append("div")
+	// 	.attr("id", "visuals")
+	// 	.transition().duration(200);
 
-	var svg_canvas = d3.select("#visuals").append("svg")
-		.attr("width", width)
-		.attr("height", height)
-		.attr("class", "gdp_canvas");
+	var svg_canvas = d3.select("#gdp_visuals").append("svg")
+		.attr("width", width - 100)
+		.attr("height", height - 100)
+		.attr("class", "gdp_canvas")
+		.attr("border", "1px sold red;");
 
 	var tooltip = d3.select("#visuals").append("div")
-									.attr("class", "tooltip")
-									.style("opacity", 0);
+			.attr("class", "tooltip")
+			.attr("width", width/4)
+			.style("opacity", 1);
 
-	var svg_legend = d3.select("#visuals").append("svg")
-										.attr("width", width/2)
-										.attr("height", 230)
+	// var button-div = d3.select("#visuals").append("div")
+	// 		.s
+	var without_daca_btn = d3.select("#visuals").append("button")
+		.attr("class", "toggleBtn btn red")
+		.style("margin", "10px")
+		.style("width", "200px")
+		.text("Without DACA");
+
+
+	var naturalized_daca_btn = d3.select("#visuals").append("button")
+			.attr("class", "toggleBtn btn blue")
+			.style("margin", "10px")
+			.style("width", "200px")
+			.text("Naturalized DACA");
+
 	//Define map projection
 	var projection = d3.geoAlbersUsa()
-	.translate([width/2, height/2])
+	.translate([width/2, height / 2.5])
 	.scale([800]);
 
 	// color scale using user defined domain
@@ -25,16 +43,31 @@ function draw_gdp() {
 		.domain([1000000, 100000000, 500000000, 1000000000, 5000000000, 14000000000])
 		.range(["#fcbba1","#fc9272","#fb6a4a","#de2d26","#a50f15"]);
 
-	// svg_legend.append("g")
-	// .attr("class", "gdp_loss_legend")
-	// .attr("transform", "translate(320, 20)")
-	//
-	// var legend = d3.legend.color()
-	// .shapeWidth(150).shapePadding(0)
-	// .orient("horizontal")
-	// .scale(gdp_loss_color);
+	var gdp_gain_color = d3.scaleQuantile()
+		.domain([1000000, 100000000, 500000000, 1000000000, 5000000000, 14000000000])
+		.range(["#ccece6", "#66c2a4", "#41ae76", "#238b45", "#005824"]);
 
-	// svg_legend.select(".gdp_loss_legend").call(legend);
+	svg_canvas.append("g")
+	.attr("class", "gdp_loss_legend")
+	.attr("transform", "translate(960, 20)")
+
+	var gdp_loss_legend = d3.scaleQuantize()
+		.domain([1, 14000])
+		.range(["#fcbba1","#fc9272","#fb6a4a","#de2d26","#a50f15"]);
+
+	var gdp_gain_legend = d3.scaleQuantize()
+		.domain([1, 100, 500, 1000, 5000, 14000])
+		.range(["#fcbba1","#fc9272","#fb6a4a","#de2d26","#a50f15"]);
+
+	var legend = d3.legendColor()
+	.shapeWidth(25).shapePadding(0)
+	.orient("vertical")
+	.labelFormat(d3.format(".2s"))
+	.scale(gdp_loss_legend)
+	.title("GDP Loss in millions")
+	.titleWidth(250);
+
+	svg_canvas.select(".gdp_loss_legend").call(legend);
 
 	// Define path generator
 	var path = d3.geoPath().projection(projection);
@@ -92,23 +125,55 @@ function draw_gdp() {
 							 "<br>State: " + d.properties.name +
 							 "<br>GDP Loss: " + d.properties.gdp_loss +
 							 "<br>Daca Population: " + d.properties.daca_pop
-						 )
-							 .style('left', 0)
-							 .style('top', 0);
+						 ).style("transform", "translate(960px, -200px)")
 					 })
 					 .on('mouseout', () => {
 						 tooltip.transition()
 							 .duration(400)
 							 .style('opacity', 0);
 					 })
+
+				// Defining Button Interactivity
+				var togData = false;
+				d3.select(".toggleBtn")
+					.on("click", function(){
+						// Determine if current line is visible
+						togData=!togData;
+						//console.log(togData);
+						if (togData == true){
+							svg_canvas.selectAll("path")
+								.transition().duration(1000)
+								.style("fill", function(d) {
+									var value = d.properties.gdp_gain;
+									if (value) {
+										return gdp_gain_color(value);
+									} else {
+										return "#ccc";
+									}
+								});
+							} else {
+								svg_canvas.selectAll("path")
+								.transition().duration(1000)
+								.style("fill", function(d) {
+									var value = d.properties.gdp_loss;
+									if(value) {
+										return gdp_loss_color(value);
+									} else {
+										return "#ccc";
+									}
+								})
+							}
+						});
 		}) // END D3.JSON
 	}) // END D3.CSV
 
-	// Placeholder for visuals
-	svg_canvas.append("text")
-		.attr("x", 25)
-		.attr("y", 25)
-		.attr("font-family", "sans-serif")
-		.attr("fill", "red")
-		.text("GDP VISUALIZATION");
+
+
+	// // Placeholder for visuals
+	// svg_canvas.append("text")
+	// 	.attr("x", (width - 100) /2)
+	// 	.attr("y", 25)
+	// 	.attr("font-family", "sans-serif")
+	// 	.attr("fill", "red")
+	// 	.text("GDP LOSS");
 }
