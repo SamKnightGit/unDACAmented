@@ -1,6 +1,6 @@
 /* global d3 */
-var width=1600;
-var height=1400;
+var width=1800;
+var height=600;
 
 var total_unauthorized_pop = {
   "mexico":1254083,
@@ -21,12 +21,12 @@ var unauthorized_percentage = {
 build_percentage(total_unauthorized_pop, get_total_pop(total_unauthorized_pop));
 
 var color = d3.scaleQuantile()
-  .domain([0, 10, 20, 30, 40])
+  .domain([0, 5, 10, 15, 20])
   .range(d3.schemeGreens[5]);
 
 var key_scale = d3.scaleLinear()
-  .domain([0, 10, 20, 30, 40])
-  .rangeRound([1025, 1065]);
+  .domain([0, 5, 10, 15, 20])
+  .rangeRound([1280, 1320]);
 
 function build_pop(state_pop) {
   for (var property in state_pop) {
@@ -66,6 +66,19 @@ function get_max_pop(pop_object) {
   return max;
 }
 
+function pretty_country_name(country_name) {
+  pretty_names = {
+    "mexico":"Mexico",
+    "other_north":"North and Central America",
+    "asia":"Asia",
+    "africa":"Africa",
+    "south_america":"South America",
+    "europe":"Europe",
+    "oceania":"Oceania"
+  };
+  return pretty_names[country_name];
+}
+
 var selected_state = null;
 
 function draw_origin() {
@@ -75,7 +88,7 @@ function draw_origin() {
       america_svg.selectAll("path")
         .style("fill", function(d) {
           if(d.id == selected_state.id) {
-            return "2196F3";
+            return "82adf2";
           }
           else {
             return "white";
@@ -90,7 +103,7 @@ function draw_origin() {
   
   function fill_america() {
     america_svg.selectAll("path")
-      .style("fill", "2196F3");
+      .style("fill", "82adf2");
   } 
   
   function redraw_world() {
@@ -105,7 +118,7 @@ function draw_origin() {
       .style("fill", function (d) {
         var region = d.properties.name;
         if (region == "united_states") {
-          return "grey";
+          return "d8d8d8";
         }
         else {
           return color(unauthorized_percentage[region]);
@@ -119,10 +132,49 @@ function draw_origin() {
     .attr("width", width)
     .attr("height", height);
   
+  var american_tooltip = d3.select("#visuals").append("div")
+    .style("transform", "translate(300px,0px)")
+    .attr("class", "american_legend")
+    .style("width", "400px")
+    .style("height", "200px")
+    .style("float", "left");
+  
+  
+  
   var world_svg = svg_canvas.append("svg")
     .attr("id", "world")
     .attr("width", width)
     .attr("height", height);
+  
+  var main_tooltip = d3.select("#visuals").append("div")
+    .attr("class", "main_tooltip");
+  
+  var main_title = main_tooltip.append("p")
+    .attr("class", "main_title")
+    .text("");
+  
+  var main_pop1 = main_tooltip.append("p")
+    .attr("class", "world_p")
+    .text("");
+  
+  var main_pop2 = main_tooltip.append("p")
+    .attr("class", "world_p")
+    .text("");
+  
+  var main_pop3 = main_tooltip.append("p")
+    .attr("class", "world_p")
+    .text("");
+ 
+  var world_tooltip = d3.select("#visuals").append("div")
+    .attr("class", "world_tooltip");
+  
+  var world_country = world_tooltip.append("p")
+    .attr("class", "world_p")
+    .text("");
+  
+  var world_percentage = world_tooltip.append("p")
+    .attr("class", "world_p")
+    .text("");
   
   var america_svg = svg_canvas.append("svg")
     .attr("id", "america")
@@ -131,13 +183,13 @@ function draw_origin() {
   
   var us_projection = d3.geoAlbersUsa()
     .scale(750)
-    .translate([400,235]);
+    .translate([600,265]);
   var us_path = d3.geoPath()
     .projection(us_projection);
   
   var world_projection = d3.geoNaturalEarth()
     .scale(150)
-    .translate([1100,260]);
+    .translate([1300,280]);
   var world_path = d3.geoPath()
       .projection(world_projection);
 
@@ -146,16 +198,27 @@ function draw_origin() {
   
   var title_text = title.append("text")
     .attr("class", "title")
-    .attr("x", 235)
-    .attr("y", 20)
+    .attr("x", 730)
+    .attr("y", 0)
     .attr("fill", "#000")
     .attr("text-anchor", "start")
+    .attr("font-size", "20px")
     .attr("font-weight", "bold")
-    .text("Undocumented Immigrants in the United States");
+    .text("Potential DACA Beneficiaries by Region of Birth, 2012");
+  
+  var prompt_text = title.append("text")
+    .attr("class", "prompt_on")
+    .attr("x", 470)
+    .attr("y", 85)
+    .attr("fill", "#000")
+    .attr("text-anchor", "start")
+    .attr("font-size", "14px")
+    .attr("color", "d8d8d8")
+    .text("Click on a state to view breakdown by region");
 
   var key = world_svg.append("g")
       .attr("class", "key")
-      .attr("transform", "translate(0,15)");
+      .attr("transform", "translate(0,450)");
 
   key.selectAll("rect")
     .data(color.range().map(function(d) {
@@ -163,26 +226,27 @@ function draw_origin() {
       return d;
     }))
     .enter().append("rect")
-      .attr("height", 10)
-      .attr("x", function(d, i) { return 1025+(40 * i); })
+      .attr("height", 12)
+      .attr("x", function(d, i) { return 1280+(40 * i); })
       .attr("width", 40)
       .attr("fill", function(d, i) { return color(d[0]); });
 
   key.append("text")
       .attr("class", "caption")
-      .attr("x", 1000)
-      .attr("y", -6)
+      .attr("x", 1280)
+      .attr("y", -10)
+      .style("font-size", "12px")
       .attr("fill", "#000")
       .attr("text-anchor", "start")
       .attr("font-weight", "bold")
-      .text("Percentage of Undocumented Immigrants from Region");
+      .text("Potential Beneficiaries from Region");
 
   key.call(d3.axisBottom(key_scale)
-      .tickSize(13)
+      .tickSize(15)
       .tickFormat(function(x) {
-          return d3.format(".2s")(x) + "%";
+          return x + "%";
       })
-      .tickValues([10, 20, 30, 40]))
+      .tickValues([5, 10, 15, 20]))
     .select(".domain")
       .remove();
   
@@ -216,11 +280,11 @@ function draw_origin() {
         .enter().append("path")
         .attr("d", us_path)
         .style("stroke", "grey")
-        .style("fill", "2196F3")
+        .style("fill", "82adf2")
         .on("mouseover", function() {
           clear_america();
           d3.select(this)
-            .style("fill", "2196F3");
+            .style("fill", "82adf2");
         })
         .on("mouseout", function(d) {
           d3.select(this)
@@ -231,23 +295,24 @@ function draw_origin() {
           else {
             if(d.id == selected_state.id) {
               d3.select(this)
-                .style("fill", "2196F3")
+                .style("fill", "82adf2")
             }
           }
         })
         .on("mousedown", function(d) {
+          prompt_text.attr("display", "none");
           if (!selected_state) {
             selected_state = d;
-            title_text.text("Undocumented Immigrants in " + d.properties.name);
+            main_title.text(d.properties.name);
           }
           else {
             if (d.id == selected_state.id) {
               selected_state = null;
-              title_text.text("Undocumented Immigrants in the United States")
+              main_title.text("USA")
             }
             else {
               selected_state = d;
-              title_text.text("Undocumented Immigrants in " + d.properties.name);
+              main_title.text(d.properties.name);
             }
           }
           clear_america();
@@ -267,7 +332,7 @@ function draw_origin() {
       .style("fill", function(d) {
         var region = d.properties.name;
         if (region == "united_states") {
-          return "grey";
+          return "d8d8d8";
         }
         else {
           return color(unauthorized_percentage[region]);
@@ -290,7 +355,15 @@ function draw_origin() {
             d3.select(this)
               .style("stroke", "black");
           } 
+          world_country.text(pretty_country_name(d.properties.name));
+          world_percentage.text(d3.format(".1f")(unauthorized_percentage[d.properties.name]).toString() + "%");
+          world_tooltip.style("display", "inline");
         }
+      })
+      .on("mousemove", function() {
+        world_tooltip
+          .style("left", (d3.event.pageX-50) + "px")
+          .style("top", (d3.event.pageY-40) + "px");
       })
       .on("mouseout", function(d) {
         if (d.properties.name != "united_states") {
@@ -301,7 +374,8 @@ function draw_origin() {
           else {
             d3.select(this)
               .style("stroke", "grey");
-          } 
+          }
+          world_tooltip.style("display", "none");
         }
       });
   }); 
