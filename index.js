@@ -51,5 +51,5 @@ $(document).ready(function() {
 			draw_gdp();
 		}
 	});
-	$(".label").text().replace(/G/g,"B");
+	// $(".label").text().replace(/G/g,"B");
 });

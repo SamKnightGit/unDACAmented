@@ -81,7 +81,6 @@ function draw_gdp() {
 	.titleWidth(400);
 
 
-
 	svg_canvas.select(".gdp_legend").call(legend_loss);
 
 	// Define path generator
@@ -102,7 +101,11 @@ function draw_gdp() {
 				var daca_pop = parseInt(data[i]["DACA Population"])
 
 				total_loss += parseInt(data[i]["GDP Loss"]);
-				total_gain += parseInt(data[i]["GDP Gain Education"])
+				if(data[i]["GDP Gain Education"]) {
+					total_gain += parseInt(data[i]["GDP Gain Education"]);
+				}
+
+				console.log("total_gain", total_gain)
 				//Find the corresponding state inside the GeoJSON
 				for (var j = 0; j < json.features.length; j++) {
 					var jsonState = json.features[j].properties.name;
@@ -119,25 +122,40 @@ function draw_gdp() {
 
 			// total_loss
 			var loss = d3.format(".2s")(total_loss).replace(/G/,"B");
+			var gain = d3.format(".2s")(total_gain).replace(/G/,"B");
 			//Bind data and create one path per GeoJSON feature
 			//Default map(the view on page load) will be productivity data
 			// d3.select("svg").append("circle")
-			svg_canvas.append("circle")
+
+
+			var circle = svg_canvas.append("g");
+			circle.append("circle")
 			.attr("r", 75)
 			.attr("id", "total")
 			.attr("class", "total_dollars")
 			.style("transform", "translate(200px, 150px)")
 			.style("fill", "#b74046");
 
-			svg_canvas.append("text")
+			// var total_dollars_circle = svg_canvas
+
+			circle.append("text")
 			// .style("stroke", "white")
 			.style("font-weight", "bolder")
+			.attr("class", "total_dollars_text")
 			.style("transform", "translate(160px, 150px)")
 			.style("fill", "white")
-			// svg_canvas.select("circle")
-			// .append("text")
 			.text("$" + loss + " Loss");
+
+			d3.select(".total_dollars").append("i").attr("class", "fas fa-angle-double-down")
+			.style("transform", "translate(160px, 150px)")
+			// .style("positon", "absolute")
+			// .style("top", "0")
+			// .style("left", "0");
+			// circle.append("text")
+			// .text("\uf103")
 			// .style("fill", "black")
+			// .style("transform", "translate(160px, 180px)")
+			// .style("font-family", "Font Awesome\ 5 Free");
 			// .style("transform", "translate(250px, 175px)");
 
 
@@ -159,7 +177,8 @@ function draw_gdp() {
 							}
 				 })
 				 .on('mouseover', d => {
-						 console.log("mouse over", d.properties.name);
+						 // console.log("this", this);
+						 // this.style("fill", "black");
 						 tooltip.transition()
 							 .duration(200)
 							 .style('opacity', .9);
@@ -195,9 +214,8 @@ function draw_gdp() {
 									}
 								});
 								svg_canvas.select(".gdp_legend").call(legend_loss);
-							// } else {
-
-							// }
+								d3.select(".total_dollars").transition().duration(1000).style("fill", "#b74046");
+								d3.select(".total_dollars_text").transition().duration(1000).text("$" + loss);
 						});
 				d3.select(".toggleBtnGain")
 					.on("click", function(){
@@ -215,7 +233,10 @@ function draw_gdp() {
 										return "#ccc";
 									}
 								});
-								svg_canvas.select(".gdp_legend").call(legend_gain);
+								svg_canvas.select(".gdp_legend").call(legend_gain).transition().duration(1000);
+								// console.log("total_gain", gain);
+								d3.select(".total_dollars").transition().duration(1000).style("fill", "#52a26b");
+								d3.select(".total_dollars_text").transition().duration(1000).text("$" + gain + " gain");
 							// } else {
 
 							// }
@@ -225,13 +246,14 @@ function draw_gdp() {
 
 
 
-	// // Placeholder for visuals
-	// svg_canvas.append("text")
-	// 	.attr("x", (width - 100) /2)
-	// 	.attr("y", 25)
-	// 	.attr("font-family", "sans-serif")
-	// 	.attr("fill", "red")
-	// 	.text("GDP LOSS");
-	// var f = d3.format("0.2s");
+	// Placeholder for visuals
+	var title = svg_canvas.append("text")
+	 .attr("class", "canvas_title")
+		.attr("x", (width - 100) /2)
+		.attr("y", 25)
+		.attr("font-family", "sans-serif")
+		.attr("fill", "black")
+	 .text("GDP LOSS ANNUALLY")
+	var f = d3.format("0.2s");
 
 }
