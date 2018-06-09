@@ -176,9 +176,8 @@ function draw_gdp() {
 									return "#fff";
 							}
 				 })
-				 .on('mouseover', d => {
-						 // console.log("this", this);
-						 // this.style("fill", "black");
+				 .on('mouseover', function(d) {
+						 d3.select(this).style("fill-opacity", .75);
 						 tooltip.transition()
 							 .duration(200)
 							 .style('opacity', .9);
@@ -189,7 +188,8 @@ function draw_gdp() {
 							 "<br>Daca Population: " + d.properties.daca_pop
 						 ).style("transform", "translate(960px, -200px)")
 					 })
-					 .on('mouseout', () => {
+					 .on('mouseout', function() {
+						 d3.select(this).style("fill-opacity", 1);
 						 tooltip.transition()
 							 .duration(400)
 							 .style('opacity', 0);
