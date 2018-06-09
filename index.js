@@ -46,8 +46,10 @@ $(document).ready(function() {
 			$( '#GDP_Label' ).removeClass('label');
 			$( '#GDP_Label' ).addClass('label_selected');
 			console.log("gdp btn clicked");
+			$("#visuals").toggle();
+			$("#gdp_visuals").toggle();
 			draw_gdp();
 		}
 	});
-
+	$(".label").text().replace(/G/g,"B");
 });
