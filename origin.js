@@ -12,16 +12,36 @@ var total_unauthorized_pop = {
   "oceania":22680
 };
 
+var top_3 = []
+
 var unauthorized_pop = {
 }
 
 var unauthorized_percentage = {
 }
 
+function get_top_3(pop_object) {
+  var pop_array = Object.values(pop_object);
+  pop_array.sort(function (x,y) {
+    return d3.descending(x,y);
+  });
+  for (var i = 0; i < 3; i++) {
+    var pop = pop_array[i];
+    for (var property in pop_object) {
+      if (pop_object.hasOwnProperty(property)) {
+        if (pop_object[property] == pop) {
+          top_3[i] = {[pretty_country_name([property])]: pop};
+        }
+      }
+    }  
+  }
+}
+
 build_percentage(total_unauthorized_pop, get_total_pop(total_unauthorized_pop));
+get_top_3(total_unauthorized_pop);
 
 var color = d3.scaleQuantile()
-  .domain([0, 5, 10, 15, 20])
+  .domain([0, 5, 10, 15, 20, 25])
   .range(d3.schemeGreens[5]);
 
 var key_scale = d3.scaleLinear()
@@ -126,44 +146,84 @@ function draw_origin() {
       });
   }
   
+  function update_main_pop() {
+    country1.text([Object.keys(top_3[0])[0]]);
+    country2.text([Object.keys(top_3[1])[0]]);
+    country3.text([Object.keys(top_3[2])[0]]);
+    
+    pop1.text([Object.values(top_3[0])[0]]);
+    pop2.text([Object.values(top_3[1])[0]]);
+    pop3.text([Object.values(top_3[2])[0]]);
+  }
+  
   d3.select("svg").remove();
   
   var svg_canvas = d3.select("#visuals").append("svg")
     .attr("width", width)
     .attr("height", height);
   
-  var american_tooltip = d3.select("#visuals").append("div")
-    .style("transform", "translate(300px,0px)")
-    .attr("class", "american_legend")
-    .style("width", "400px")
-    .style("height", "200px")
-    .style("float", "left");
-  
-  
   
   var world_svg = svg_canvas.append("svg")
     .attr("id", "world")
     .attr("width", width)
     .attr("height", height);
-  
+    
   var main_tooltip = d3.select("#visuals").append("div")
     .attr("class", "main_tooltip");
   
-  var main_title = main_tooltip.append("p")
-    .attr("class", "main_title")
-    .text("");
+  var row_title = main_tooltip.append("div")
+    .attr("class", "row")
+    .style("margin-bottom", "5px");
   
-  var main_pop1 = main_tooltip.append("p")
-    .attr("class", "world_p")
-    .text("");
+  var row_label = main_tooltip.append("div")
+    .attr("class", "row")
+    .style("margin-bottom", "10px");
   
-  var main_pop2 = main_tooltip.append("p")
-    .attr("class", "world_p")
-    .text("");
+  var row_pop1 = main_tooltip.append("div")
+    .attr("class", "row");
+  var row_pop2 = main_tooltip.append("div")
+    .attr("class", "row");
+  var row_pop3 = main_tooltip.append("div")
+    .attr("class", "row")
+    .style("margin-bottom", "10px");
   
-  var main_pop3 = main_tooltip.append("p")
-    .attr("class", "world_p")
-    .text("");
+  var main_title = row_title.append("div")
+    .attr("class", "main_tt_title col s12")
+    .text("USA");
+  
+  row_label.append("div")
+    .attr("class", "tt_left main_tt_header col s6")
+    .text("Region");
+  
+  row_label.append("div")
+    .attr("class", "tt_right main_tt_header col s6")
+    .text("# Beneficiaries");
+  
+  var country1 = row_pop1.append("div")
+    .attr("class", "tt_left col s6")
+    .text("Country 1");
+  
+  var pop1 = row_pop1.append("div")
+    .attr("class", "tt_right col s6")
+    .text("Pop 1");
+  
+  var country2 = row_pop2.append("div")
+    .attr("class", "tt_left col s6")
+    .text("Country 2");
+  
+  var pop2 = row_pop2.append("div")
+    .attr("class", "tt_right col s6")
+    .text("Pop 2");
+  
+  var country3 = row_pop3.append("div")
+    .attr("class", "tt_left col s6")
+    .text("Country 3");
+  
+  var pop3 = row_pop3.append("div")
+    .attr("class", "tt_right col s6")
+    .text("Pop 3");
+  
+  update_main_pop();
  
   var world_tooltip = d3.select("#visuals").append("div")
     .attr("class", "world_tooltip");
@@ -208,11 +268,11 @@ function draw_origin() {
   
   var prompt_text = title.append("text")
     .attr("class", "prompt_on")
-    .attr("x", 470)
+    .attr("x", 450)
     .attr("y", 85)
     .attr("fill", "#000")
     .attr("text-anchor", "start")
-    .attr("font-size", "14px")
+    .attr("font-size", "16px")
     .attr("color", "d8d8d8")
     .text("Click on a state to view breakdown by region");
 
@@ -303,20 +363,27 @@ function draw_origin() {
           prompt_text.attr("display", "none");
           if (!selected_state) {
             selected_state = d;
-            main_title.text(d.properties.name);
+            main_title.text( d.properties.name );
           }
           else {
             if (d.id == selected_state.id) {
               selected_state = null;
-              main_title.text("USA")
+              main_title.text( "USA" )
             }
             else {
               selected_state = d;
-              main_title.text(d.properties.name);
+              main_title.text( d.properties.name );
             }
           }
           clear_america();
           redraw_world();
+          if (selected_state) {
+            get_top_3(unauthorized_pop);
+          }
+          else {
+            get_top_3(total_unauthorized_pop);
+          }
+          update_main_pop(top_3); 
         });
     });       
   });
