@@ -205,7 +205,7 @@ function draw_origin() {
 
 	row_label.append("div")
 		.attr("class", "tt_right main_tt_header col s6")
-		.text("# Beneficiaries");
+		.text("Beneficiaries");
 
 	var country1 = row_pop1.append("div")
 		.attr("class", "tt_left col s6")

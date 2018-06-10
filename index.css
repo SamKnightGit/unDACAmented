@@ -95,3 +95,9 @@ p.main_p {
 	margin-bottom: 8px;
 	width: 120;
 }
+
+.no_domain .domain{ 
+  display: none;
+}
+
+
