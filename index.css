@@ -37,9 +37,9 @@ div.world_tooltip {
 
 div.main_tooltip {
 	position: relative;
-	bottom: 270px;
-	right: -820px;
-	width: 290px;
+	bottom: 380px;
+	left: 40%;
+	width: 20%;
 	height: auto;
 	padding: 10px;
 	border: solid 1px black;

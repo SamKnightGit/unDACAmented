@@ -3,7 +3,9 @@ var width=1800;
 var height=600;
 
 function draw_employment() {
-	console.log("employed!");
+	var bar_canvas = d3.select("#visuals").append("svg")
+      .attr("width", width)
+      .attr("height", 400);
 }
 
 function draw_education() {

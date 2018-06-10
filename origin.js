@@ -1,5 +1,4 @@
 /* global d3 */
-var width=1800;
 var height=600;
 
 var total_unauthorized_pop = {
@@ -165,13 +164,16 @@ function draw_origin() {
 	d3.select("svg").remove();
 
 	var svg_canvas = d3.select("#visuals").append("svg")
-		.attr("width", width)
+		.attr("width", "100%")
 		.attr("height", height);
 
-
+    
+    var width = parseInt(svg_canvas.style("width").replace("px", ""));
+    console.log(width)
+  
 	var world_svg = svg_canvas.append("svg")
 		.attr("id", "world")
-		.attr("width", width)
+		.attr("width", "100%")
 		.attr("height", height);
 
 	var main_tooltip = d3.select("#visuals").append("div")
@@ -244,38 +246,38 @@ function draw_origin() {
 
 	var america_svg = svg_canvas.append("svg")
 		.attr("id", "america")
-		.attr("width", width)
+		.attr("width", "100%")
 		.attr("height", height);
 
 	var us_projection = d3.geoAlbersUsa()
-		.scale(750)
-		.translate([600,265]);
+		.scale(width/2.5)
+		.translate([width/2 - width/4,220]);
 	var us_path = d3.geoPath()
 		.projection(us_projection);
 
-	var world_projection = d3.geoNaturalEarth()
-		.scale(150)
-		.translate([1300,280]);
+	var world_projection = d3.geoNaturalEarth1()
+		.scale(width/12)
+		.translate([width/2 + width/4,260]);
 	var world_path = d3.geoPath()
 			.projection(world_projection);
 
 	var title = america_svg.append("g")
-		.attr("transform", "translate(0,15)");
+		.attr("transform", "translate(0,45)");
 
 	var title_text = title.append("text")
 		.attr("class", "title")
-		.attr("x", 730)
+		.attr("x", "950px")
 		.attr("y", 0)
 		.attr("fill", "#000")
-		.attr("text-anchor", "start")
+		.attr("text-anchor", "middle")
 		.attr("font-size", "20px")
 		.attr("font-weight", "bold")
 		.text("Potential DACA Beneficiaries by Region of Birth, 2012");
 
 	var prompt_text = title.append("text")
 		.attr("class", "prompt_on")
-		.attr("x", 450)
-		.attr("y", 85)
+		.attr("x", 145)
+		.attr("y", 350)
 		.attr("fill", "#000")
 		.attr("text-anchor", "start")
 		.attr("font-size", "16px")
@@ -350,7 +352,8 @@ function draw_origin() {
 				.on("mouseover", function() {
 					clear_america();
 					d3.select(this)
-						.style("fill", "82adf2");
+						.style("fill", "82adf2")
+                        .style("cursor", "pointer");
 				})
 				.on("mouseout", function(d) {
 					d3.select(this)
