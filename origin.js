@@ -11,13 +11,15 @@ var total_unauthorized_pop = {
 	"oceania":22680
 };
 
-var top_3 = []
+var top_3 = [];
+
+var rest_of_the_world = 0;
 
 var unauthorized_pop = {
-}
+};
 
 var unauthorized_percentage = {
-}
+};
 
 function get_top_3(pop_object) {
 	var pop_array = Object.values(pop_object);
@@ -34,7 +36,13 @@ function get_top_3(pop_object) {
 			}
 		}
 	}
+    var sum = 0;
+    for (var i = 3; i < pop_array.length; i++) {
+      sum += pop_array[i];
+    }
+    rest_of_the_world = sum;
 }
+
 
 build_percentage(total_unauthorized_pop, get_total_pop(total_unauthorized_pop));
 get_top_3(total_unauthorized_pop);
@@ -113,7 +121,7 @@ function draw_origin() {
 			america_svg.selectAll("path")
 				.style("fill", function(d) {
 					if(d.id == selected_state.id) {
-						return "82adf2";
+						return "a6bddb";
 					}
 					else {
 						return "white";
@@ -128,7 +136,7 @@ function draw_origin() {
 
 	function fill_america() {
 		america_svg.selectAll("path")
-			.style("fill", "82adf2");
+			.style("fill", "a6bddb");
 	}
 
 	function redraw_world() {
@@ -155,10 +163,12 @@ function draw_origin() {
 		country1.text([Object.keys(top_3[0])[0]]);
 		country2.text([Object.keys(top_3[1])[0]]);
 		country3.text([Object.keys(top_3[2])[0]]);
+        country4.text("Other");
 
 		pop1.text([Object.values(top_3[0])[0]]);
 		pop2.text([Object.values(top_3[1])[0]]);
 		pop3.text([Object.values(top_3[2])[0]]);
+        pop4.text(rest_of_the_world);
 	}
 
 	d3.select("svg").remove();
@@ -167,6 +177,25 @@ function draw_origin() {
 		.attr("width", "100%")
 		.attr("height", height);
 
+    var whole_usa_btn = d3.select("#visuals").append("button")
+        .attr("class", "btn")
+        .style("background", "#a6bddb")
+        .style("position","absolute")
+        .style("bottom", "12%")
+        .style("left", "18%")
+        .style("margin", "10px")
+        .style("width", "auto")
+        .text("Select Entire U.S.")
+        .on("mousedown", function() {
+          selected_state = null;
+          clear_america();
+          fill_america();
+          redraw_world();
+          get_top_3(total_unauthorized_pop);
+          update_main_pop(top_3);
+          main_title.text( "USA" );
+          d3.select(this).classed("disabled", true);
+        });
     
     var width = parseInt(svg_canvas.style("width").replace("px", ""));
     console.log(width)
@@ -192,7 +221,9 @@ function draw_origin() {
 	var row_pop2 = main_tooltip.append("div")
 		.attr("class", "row");
 	var row_pop3 = main_tooltip.append("div")
-		.attr("class", "row")
+		.attr("class", "row");
+    var row_pop4 = main_tooltip.append("div")
+        .attr("class", "row")
 		.style("margin-bottom", "10px");
 
 	var main_title = row_title.append("div")
@@ -230,6 +261,14 @@ function draw_origin() {
 	var pop3 = row_pop3.append("div")
 		.attr("class", "tt_right col s6")
 		.text("Pop 3");
+  
+    var country4 = row_pop4.append("div")
+        .attr("class", "tt_left col s6")
+        .text("Country 4");
+  
+  	var pop4 = row_pop4.append("div")
+		.attr("class", "tt_right col s6")
+		.text("Pop 4");
 
 	update_main_pop();
 
@@ -251,13 +290,13 @@ function draw_origin() {
 
 	var us_projection = d3.geoAlbersUsa()
 		.scale(width/2.5)
-		.translate([width/2 - width/4,220]);
+		.translate([width/2 - width/4,260]);
 	var us_path = d3.geoPath()
 		.projection(us_projection);
 
 	var world_projection = d3.geoNaturalEarth1()
 		.scale(width/12)
-		.translate([width/2 + width/4,260]);
+		.translate([width/2 + width/4,290]);
 	var world_path = d3.geoPath()
 			.projection(world_projection);
 
@@ -266,23 +305,13 @@ function draw_origin() {
 
 	var title_text = title.append("text")
 		.attr("class", "title")
-		.attr("x", "950px")
+		.attr("x", "50%")
 		.attr("y", 0)
 		.attr("fill", "#000")
 		.attr("text-anchor", "middle")
 		.attr("font-size", "20px")
 		.attr("font-weight", "bold")
 		.text("Potential DACA Beneficiaries by Region of Birth, 2012");
-
-	var prompt_text = title.append("text")
-		.attr("class", "prompt_on")
-		.attr("x", 145)
-		.attr("y", 350)
-		.attr("fill", "#000")
-		.attr("text-anchor", "start")
-		.attr("font-size", "16px")
-		.attr("color", "d8d8d8")
-		.text("Click on a state to view breakdown by region");
 
 	var key = world_svg.append("g")
 			.attr("class", "key")
@@ -298,7 +327,7 @@ function draw_origin() {
 			.attr("x", function(d, i) { return 1280+(40 * i); })
 			.attr("width", 40)
 			.attr("fill", function(d, i) { return color(d[0]); });
-
+  
 	key.append("text")
 			.attr("class", "caption")
 			.attr("x", 1280)
@@ -348,11 +377,25 @@ function draw_origin() {
 				.enter().append("path")
 				.attr("d", us_path)
 				.style("stroke", "grey")
-				.style("fill", "82adf2")
+				.style("fill", function(d) {
+                  if (d.id == "06") {
+                    selected_state = d;
+                    whole_usa_btn.classed("disabled", false);
+		            main_title.text( d.properties.name );
+                    clear_america();
+					redraw_world();
+				    get_top_3(unauthorized_pop);
+					update_main_pop(top_3);
+                    return "a6bddb";
+                  }
+                  else {
+                    return "white";
+                  }
+                })
 				.on("mouseover", function() {
 					clear_america();
 					d3.select(this)
-						.style("fill", "82adf2")
+						.style("fill", "d2deed")
                         .style("cursor", "pointer");
 				})
 				.on("mouseout", function(d) {
@@ -364,20 +407,21 @@ function draw_origin() {
 					else {
 						if(d.id == selected_state.id) {
 							d3.select(this)
-								.style("fill", "82adf2")
+								.style("fill", "a6bddb")
 						}
 					}
 				})
 				.on("mousedown", function(d) {
-					prompt_text.attr("display", "none");
 					if (!selected_state) {
 						selected_state = d;
+                        whole_usa_btn.classed("disabled", false);
 						main_title.text( d.properties.name );
 					}
 					else {
 						if (d.id == selected_state.id) {
+                            whole_usa_btn.classed("disabled", true);
 							selected_state = null;
-							main_title.text( "USA" )
+							main_title.text( "USA" );
 						}
 						else {
 							selected_state = d;

@@ -78,11 +78,16 @@ function draw_employment() {
         .call(d3.axisBottom(occupation_scale))
         .selectAll("text")
         .attr("transform", "rotate(-30)")
-        .style("text-anchor", "end")
-      .append("text")
-        .attr("x", "0")
-        .attr("y", "0")
-        .text("Occupation");
+        .style("text-anchor", "end");
+      
+      g.append("g")
+        .append("text")
+          .attr("text-anchor", "middle")
+          .attr("x", width/2)
+          .attr("y", height + 120)
+          .attr("font-weight", "bold")
+          .attr("font-size", "16px")
+          .text("Occupation");
       
       g.append("g")
         .attr("class", "no_domain")
