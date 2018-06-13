@@ -22,7 +22,8 @@ var unauthorized_percentage = {
 };
 
 function get_top_3(pop_object) {
-    var data = []
+    var data = [];
+    var total = get_total_pop(pop_object);
 	var pop_array = Object.values(pop_object);
 	pop_array.sort(function (x,y) {
 		return d3.descending(x,y);
@@ -32,7 +33,8 @@ function get_top_3(pop_object) {
 		for (var property in pop_object) {
 			if (pop_object.hasOwnProperty(property)) {
 				if (pop_object[property] == pop) {
-					data[i] = {[pretty_country_name([property])]: pop};
+                    var percent = pop/total * 100;
+					data[i] = {[pretty_country_name([property])]: [pop, percent]};
 				}
 			}
 		}
@@ -41,8 +43,9 @@ function get_top_3(pop_object) {
     for (var i = 3; i < pop_array.length; i++) {
       sum += pop_array[i];
     }
+    var percent = sum/total * 100;
     data.push({
-      "Other": sum
+      "Other": [sum, percent]
     });
     bar_data = data;
 }
@@ -57,7 +60,7 @@ var pop_scale = d3.scaleLinear()
     .rangeRound([150, 10]);
 
 var region_scale = d3.scaleBand()
-      .rangeRound([40, 270])
+      .rangeRound([55, 285])
       .paddingInner(0.2);
 
 var color = d3.scaleQuantile()
@@ -178,12 +181,13 @@ function draw_origin() {
       var regions = [];
       for (var i = 0; i < bar_data.length; i++) {
         regions.push(Object.keys(bar_data[i])[0]);
-        regions_pop.push(Object.values(bar_data[i])[0])
+        regions_pop.push(Object.values(bar_data[i])[0][0])
       }
       
       bar_data.forEach(function(d) {
         d.key = Object.keys(d)[0];
-        d.value = Object.values(d)[0];
+        d.value = Object.values(d)[0][0];
+        d.percent = Object.values(d)[0][1];
       });
       
       pop_scale.domain([0, d3.max(regions_pop)]);
@@ -204,6 +208,9 @@ function draw_origin() {
         .attr("width", region_scale.bandwidth())
         .attr("height", function(d) {
           return 150 - pop_scale(d.value);
+        })
+        .style("fill", function(d) {
+          return color(d.percent);
         });
       
         var xAxis = d3.axisBottom(region_scale);
@@ -246,22 +253,56 @@ function draw_origin() {
       
       pop_bar.append("g")
         .attr("class", "no_domain")
-        .attr("transform", "translate(40,0)")
+        .attr("transform", "translate(55,0)")
         .call(yAxis
-              .ticks(4)
-              .tickFormat(d3.format(".0s")))
+              .ticks(5)
+              .tickFormat(d3.format(".2s")))
         .selectAll("text")
         .style("text-anchor", "end")
         .attr("font-size", "10px");
         
-      pop_bar.selectAll("text")
+      pop_bar.append("g")
+        .selectAll("text")
         .data(bar_data)
         .enter()
         .append("text")
-        .text(function(d) {
-             return d
+        .attr("x", function(d) {
+          console.log(d);
+          return region_scale(d.key) + region_scale.bandwidth()/2;
+        })
+        .attr("y", function(d) {
+          return pop_scale(d.value)-1;
+        })
+        .attr("width", region_scale.bandwidth())
+        .attr("height", function(d) {
+          return 150 - pop_scale(d.value);
+        })
+        .attr("text-anchor", "middle")
+        .attr("font-size", "10px")
+        .text(function(d) {  
+          return d3.format("0.2s")(d.value);
         });
-        
+      
+      pop_bar.append("g")
+        .append("text")
+          .attr("text-anchor", "middle")
+          .attr("x", 153)
+          .attr("y", 207)
+          .attr("font-weight", "bold")
+          .attr("font-size", "12px")
+          .text("Region");
+      
+      pop_bar.append("g")
+        .append("text")
+          .attr("transform", "rotate(-90)")
+          .attr("x", -85)
+          .attr("y", 15)
+          .attr("dy", "0.32em")
+          .attr("fill", "#000")
+          .attr("font-weight", "bold")
+          .attr("text-anchor", "middle")
+          .attr("font-size", "12px")
+          .text("Beneficiaries");
     }
   
     
@@ -300,6 +341,7 @@ function draw_origin() {
           fill_america();
           redraw_world();
           get_top_3(total_unauthorized_pop);
+          update_bar_chart();
           //update_main_pop(top_3);
           main_title.text( "USA" );
           d3.select(this).classed("disabled", true);
@@ -382,7 +424,6 @@ function draw_origin() {
 		.enter().append("rect")
 			.attr("height", 12)
 			.attr("x", function(d, i) { 
-              console.log(d);
               var base = 1220;
               switch(i) {
                   case 0:
@@ -560,7 +601,7 @@ function draw_origin() {
 							.style("stroke", "black");
 					}
 					world_country.text(pretty_country_name(d.properties.name));
-					world_percentage.text(d3.format(".1f")(unauthorized_percentage[d.properties.name]).toString() + "%");
+					world_percentage.text(d3.format(".2f")(unauthorized_percentage[d.properties.name]).toString() + "%");
 					world_tooltip.style("display", "inline");
 				}
 			})
