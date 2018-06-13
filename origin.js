@@ -11,9 +11,9 @@ var total_unauthorized_pop = {
 	"oceania":22680
 };
 
-var top_3 = [];
-
-var rest_of_the_world = 0;
+var top_regions = [];
+var top_regions_pop = [];
+var bar_data = [];
 
 var unauthorized_pop = {
 };
@@ -22,6 +22,7 @@ var unauthorized_percentage = {
 };
 
 function get_top_3(pop_object) {
+    var data = []
 	var pop_array = Object.values(pop_object);
 	pop_array.sort(function (x,y) {
 		return d3.descending(x,y);
@@ -31,7 +32,7 @@ function get_top_3(pop_object) {
 		for (var property in pop_object) {
 			if (pop_object.hasOwnProperty(property)) {
 				if (pop_object[property] == pop) {
-					top_3[i] = {[pretty_country_name([property])]: pop};
+					data[i] = {[pretty_country_name([property])]: pop};
 				}
 			}
 		}
@@ -40,20 +41,33 @@ function get_top_3(pop_object) {
     for (var i = 3; i < pop_array.length; i++) {
       sum += pop_array[i];
     }
-    rest_of_the_world = sum;
+    data.push({
+      "Other": sum
+    });
+    bar_data = data;
 }
+
 
 
 build_percentage(total_unauthorized_pop, get_total_pop(total_unauthorized_pop));
 get_top_3(total_unauthorized_pop);
 
+
+var pop_scale = d3.scaleLinear()
+    .rangeRound([150, 10]);
+
+var region_scale = d3.scaleBand()
+      .rangeRound([40, 270])
+      .paddingInner(0.2);
+
 var color = d3.scaleQuantile()
-	.domain([0, 5, 10, 15, 20, 25])
+	.domain([0, 5, 10, 25, 50, 100])
 	.range(d3.schemeGreens[5]);
 
-var key_scale = d3.scaleLinear()
-	.domain([0, 5, 10, 15, 20])
-	.rangeRound([1280, 1320]);
+var key_scale = d3.scalePow()
+    .exponent(0.535)
+	.domain([20, 100, 200, 500, 1000])
+	.rangeRound([1305, 1465]);
 
 function build_pop(state_pop) {
 	for (var property in state_pop) {
@@ -158,18 +172,112 @@ function draw_origin() {
 				}
 			});
 	}
-
+  
+    function update_bar_chart() {
+      var regions_pop = [];
+      var regions = [];
+      for (var i = 0; i < bar_data.length; i++) {
+        regions.push(Object.keys(bar_data[i])[0]);
+        regions_pop.push(Object.values(bar_data[i])[0])
+      }
+      
+      bar_data.forEach(function(d) {
+        d.key = Object.keys(d)[0];
+        d.value = Object.values(d)[0];
+      });
+      
+      pop_scale.domain([0, d3.max(regions_pop)]);
+      region_scale.domain(regions);
+      
+      
+      pop_bar.selectAll("rect").remove();
+      pop_bar.selectAll("rect")
+        .data(bar_data)
+        .enter()
+        .append("rect")
+        .attr("x", function(d) {
+          return region_scale(d.key);
+        })
+        .attr("y", function(d) {
+          return pop_scale(d.value);
+        })
+        .attr("width", region_scale.bandwidth())
+        .attr("height", function(d) {
+          return 150 - pop_scale(d.value);
+        });
+      
+        var xAxis = d3.axisBottom(region_scale);
+        var yAxis = d3.axisLeft(pop_scale);
+      
+      //Source: 
+      //https://bl.ocks.org/mbostock/7555321
+      function wrap(text, width) {
+        text.each(function() {
+          var text = d3.select(this),
+              words = text.text().split(/\s+/).reverse(),
+              word,
+              line = [],
+              lineNumber = 0,
+              lineHeight = 1.1, // ems
+              y = text.attr("y"),
+              dy = parseFloat(text.attr("dy")),
+              tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
+          while (word = words.pop()) {
+            line.push(word);
+            tspan.text(line.join(" "));
+            if (tspan.node().getComputedTextLength() > width) {
+              line.pop();
+              tspan.text(line.join(" "));
+              line = [word];
+              tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
+            }
+          }
+        });
+      }
+      
+      pop_bar.selectAll("g").remove();
+      pop_bar.selectAll("text").remove();
+      pop_bar.append("g")
+        .attr("class", "no_domain")
+        .attr("transform", "translate(0," + 150 + ")")
+        .call(xAxis)
+        .selectAll("text")
+        .call(wrap, region_scale.bandwidth());
+      
+      pop_bar.append("g")
+        .attr("class", "no_domain")
+        .attr("transform", "translate(40,0)")
+        .call(yAxis
+              .ticks(4)
+              .tickFormat(d3.format(".0s")))
+        .selectAll("text")
+        .style("text-anchor", "end")
+        .attr("font-size", "10px");
+        
+      pop_bar.selectAll("text")
+        .data(bar_data)
+        .enter()
+        .append("text")
+        .text(function(d) {
+             return d
+        });
+        
+    }
+  
+    
+    /*
 	function update_main_pop() {
-		country1.text([Object.keys(top_3[0])[0]]);
-		country2.text([Object.keys(top_3[1])[0]]);
-		country3.text([Object.keys(top_3[2])[0]]);
-        country4.text("Other");
+		country1 = [Object.keys(top_3[0])[0]];
+		country2 = [Object.keys(top_3[1])[0]];
+		country3 = [Object.keys(top_3[2])[0]];
+        country4 = "Other";
 
-		pop1.text([Object.values(top_3[0])[0]]);
-		pop2.text([Object.values(top_3[1])[0]]);
-		pop3.text([Object.values(top_3[2])[0]]);
-        pop4.text(rest_of_the_world);
+		pop1 = [Object.values(top_3[0])[0]];
+		pop2 = [Object.values(top_3[1])[0]];
+		pop3 = [Object.values(top_3[2])[0]];
+        pop4 = rest_of_the_world;
 	}
+    */
 
 	d3.select("svg").remove();
 
@@ -181,7 +289,7 @@ function draw_origin() {
         .attr("class", "btn")
         .style("background", "#a6bddb")
         .style("position","absolute")
-        .style("bottom", "12%")
+        .style("bottom", "7%")
         .style("left", "18%")
         .style("margin", "10px")
         .style("width", "auto")
@@ -192,13 +300,12 @@ function draw_origin() {
           fill_america();
           redraw_world();
           get_top_3(total_unauthorized_pop);
-          update_main_pop(top_3);
+          //update_main_pop(top_3);
           main_title.text( "USA" );
           d3.select(this).classed("disabled", true);
         });
     
     var width = parseInt(svg_canvas.style("width").replace("px", ""));
-    console.log(width)
   
 	var world_svg = svg_canvas.append("svg")
 		.attr("id", "world")
@@ -212,65 +319,15 @@ function draw_origin() {
 		.attr("class", "row")
 		.style("margin-bottom", "5px");
 
-	var row_label = main_tooltip.append("div")
-		.attr("class", "row")
-		.style("margin-bottom", "10px");
-
-	var row_pop1 = main_tooltip.append("div")
-		.attr("class", "row");
-	var row_pop2 = main_tooltip.append("div")
-		.attr("class", "row");
-	var row_pop3 = main_tooltip.append("div")
-		.attr("class", "row");
-    var row_pop4 = main_tooltip.append("div")
-        .attr("class", "row")
-		.style("margin-bottom", "10px");
-
 	var main_title = row_title.append("div")
 		.attr("class", "main_tt_title col s12")
 		.text("USA");
 
-	row_label.append("div")
-		.attr("class", "tt_left main_tt_header col s6")
-		.text("Region");
+    var pop_bar = main_tooltip.append("svg")
+      .attr("class", "pop_bar");
 
-	row_label.append("div")
-		.attr("class", "tt_right main_tt_header col s6")
-		.text("Beneficiaries");
-
-	var country1 = row_pop1.append("div")
-		.attr("class", "tt_left col s6")
-		.text("Country 1");
-
-	var pop1 = row_pop1.append("div")
-		.attr("class", "tt_right col s6")
-		.text("Pop 1");
-
-	var country2 = row_pop2.append("div")
-		.attr("class", "tt_left col s6")
-		.text("Country 2");
-
-	var pop2 = row_pop2.append("div")
-		.attr("class", "tt_right col s6")
-		.text("Pop 2");
-
-	var country3 = row_pop3.append("div")
-		.attr("class", "tt_left col s6")
-		.text("Country 3");
-
-	var pop3 = row_pop3.append("div")
-		.attr("class", "tt_right col s6")
-		.text("Pop 3");
-  
-    var country4 = row_pop4.append("div")
-        .attr("class", "tt_left col s6")
-        .text("Country 4");
-  
-  	var pop4 = row_pop4.append("div")
-		.attr("class", "tt_right col s6")
-		.text("Pop 4");
-
-	update_main_pop();
+    update_bar_chart();
+	//update_main_pop();
 
 	var world_tooltip = d3.select("#visuals").append("div")
 		.attr("class", "world_tooltip");
@@ -324,13 +381,39 @@ function draw_origin() {
 		}))
 		.enter().append("rect")
 			.attr("height", 12)
-			.attr("x", function(d, i) { return 1280+(40 * i); })
-			.attr("width", 40)
+			.attr("x", function(d, i) { 
+              console.log(d);
+              var base = 1220;
+              switch(i) {
+                  case 0:
+                    return base; 
+                    break;
+                  case 1:
+                    return base+25; 
+                    break;
+                  case 2:
+                    return base+50; 
+                    break;
+                  case 3:
+                    return base+100; 
+                    break;
+                  case 4:
+                    return base+160; 
+                    break;
+                  default:
+                    return base; 
+              }
+                
+              
+            })
+			.attr("width", function(d) {
+              return 20*(Math.log(d[1]-d[0]));
+            })
 			.attr("fill", function(d, i) { return color(d[0]); });
   
 	key.append("text")
 			.attr("class", "caption")
-			.attr("x", 1280)
+			.attr("x", "74%")
 			.attr("y", -10)
 			.style("font-size", "12px")
 			.attr("fill", "#000")
@@ -343,7 +426,7 @@ function draw_origin() {
 			.tickFormat(function(x) {
 					return x + "%";
 			})
-			.tickValues([5, 10, 15, 20]))
+			.tickValues([5, 10, 25, 50]))
 		.select(".domain")
 			.remove();
 
@@ -385,7 +468,8 @@ function draw_origin() {
                     clear_america();
 					redraw_world();
 				    get_top_3(unauthorized_pop);
-					update_main_pop(top_3);
+                    update_bar_chart();
+					//update_main_pop(top_3);
                     return "a6bddb";
                   }
                   else {
@@ -436,14 +520,14 @@ function draw_origin() {
 					else {
 						get_top_3(total_unauthorized_pop);
 					}
-					update_main_pop(top_3);
+                    update_bar_chart();
+					//update_main_pop(top_3);
 				});
 		});
 	});
 
 	d3.json('world_map.json', function(error, json) {
 		if (error) throw error;
-		console.log(json)
 		world_svg.selectAll("path")
 			.data(json.features)
 			.enter().append("path")
