@@ -13,6 +13,7 @@ function draw_employment() {
 		}
 
 	var bar_canvas = d3.select("#bar_svg").append("svg")
+			.attr("class", "card")
 			.attr("width", "100%")
 			.attr("height", 600);
 
@@ -163,14 +164,17 @@ function draw_pie_chart() {
 
 	// init svg sizes
 	var w = width / 8;
-	var h = height / 6;
+	var h = height / 5;
 	var duration = 750;
 
 	// scale readius based on gro
-	var radius =( Math.min(w, h) / 2 ) - 20;
+	var radius = (Math.min(w, h) / 2);
 	var min = d3.min([parseInt(daca_data[0].total), parseInt(daca_ineligible_data[0].total), parseInt(us_data[0].total)]);
 	var max = d3.max([parseInt(daca_data[0].total), parseInt(daca_ineligible_data[0].total), parseInt(us_data[0].total)]);
-	var radius_scale = d3.scaleSqrt().domain([min, max]).range([30, radius]);
+	var radius_scale = d3.scaleSqrt().domain([0, max]).range([20, radius]);
+	var daca_radius = radius_scale(daca_data[0].total);
+	var us_radius = radius_scale(us_data[0].total);
+	var daca_ineligible_radius = radius_scale(daca_ineligible_data[0].total);
 
 	var pie = d3.pie()
 	.value(function(d) { return d.percent; })
@@ -181,24 +185,29 @@ function draw_pie_chart() {
 	.append('svg')
 	.attr('class', 'pie daca_pie')
 	.attr('width', w)
-	.attr('height', h);
+	.attr('height', h + 20);
 
 	var daca_g = daca_svg.append('g')
-	.attr('transform', 'translate(' + (w / 2) + ',' + (h / 2) + ')');
+	.attr('transform', 'translate(' + (w / 2) + ',' + (h / 2) + ')')
+	.attr("class", "daca_g");
 
-	var daca_arc = d3.arc()
+	var daca_path = d3.arc()
 	.innerRadius(0)
-	.outerRadius(radius_scale(daca_data[0].total));
+	.outerRadius(daca_radius);
 
-	var daca_path = daca_g.selectAll('path')
-	.data(pie(daca_data))
-	.enter()
-	.append("g")
-	.style("margin", 0)
-		.append('path')
-		.attr("class", "daca_path")
-		.attr('d', daca_arc)
-		.attr('fill', function(d,i) {
+	var daca_label = d3.arc()
+		.outerRadius(daca_radius)
+		.innerRadius(0);
+
+	var daca_arc = daca_g.selectAll(".arc")
+		.data(pie(daca_data))
+		.enter().append("g")
+			.attr("class", "arc daca_arc");
+
+	daca_arc.append("path")
+		.attr("d", daca_path)
+		.attr("class", daca_path)
+		.attr('fill', function(d) {
 			if(d.data.status == 'Employed') { return "#66c2a5";}
 			else if(d.data.status == 'Unemployed') {return "#ffffcc";}
 			else {return "#fff2ae";}
@@ -217,71 +226,128 @@ function draw_pie_chart() {
 		})
 		.on("click", function() {
 			d3.select(".daca_pie").attr("fill-opacity", "1");
-			d3.selectAll(".daca, .daca_path").attr("fill-opacity", "1");
+			d3.selectAll(".daca, .daca_path, .daca_arc").attr("fill-opacity", "1");
 			d3.selectAll(".undocumented, .us, .us_path, .daca_ineligible_path").attr("fill-opacity", ".25");
 		})
 
-	daca_path.append("text")
-		.attr("dy", "1.6em")
+	var daca_text = daca_arc.append("text")
+		// .attr("transform", function(d) {
+		// 	return "translate(" + daca_path.centroid(d)+  ")";
+		// })
 		.attr("transform", function(d) {
-			// return "translate(" + daca_arc.centroid(d)[0] + ", " + daca_arc.centroid(d)[1] +  ")";
-			return "translate(" + daca_arc.centroid(d) + ")";
+			var c = daca_path.centroid(d),
+			x = c[0],
+			y = c[1],
+			h = Math.sqrt(x*x + y*y);
+			 return "translate(" + (x/h * daca_radius + 30) +  ',' +
+					 (y/h * (daca_radius + 30)) +  ")";
 		})
-		.attr("text-anchor", "middle")
-			.style("fill", "black")
-			.text(function(d) {return d.data.percent});
+		.attr("dy", ".25em")
+		.attr("dx", "-2.75em")
+		.text(function(d) {
+			if(d.data.percent) {
+					return (d.data.percent + "%")
+			}
+		})
+		.style("font-size", "10px")
+		.attr("text-anchor", function(d) {
+			// return "middle";
+				// are we past the center?
+				return (d.endAngle + d.startAngle)/2 > Math.PI ?
+						"end" : "start";
+		})
+		var daca_total = daca_svg.append("text")
+		.text("Total: " + d3.format(".2s")(parseInt(daca_data[0].total)))
+		.attr("fill", "black")
+		.attr("class", "daca")
+		.attr("text-anchor", "start")
+		.attr("transform", "translate(60, 160)");
+
 
 	// DACA INELIGIBLE PIE ***********************************************************
 	var daca_ineligible_svg = d3.select("#pie_svg")
 		.append('svg')
 		.attr('class', 'pie daca_ineligible_pie')
 		.attr('width', w)
-		.attr('height', h);
-
-	// var daca_ineligible_label = daca_ineligible_svg.append("text").text("DACA-INELIGIBLE")
-	// .attr('transform', 'translate(' + (w / 4) + ',' + (h) + ')')
-	// .attr("text-anchor", "middle");
+		.attr('height', h + 20);
 
 	var daca_ineligible_g = daca_ineligible_svg.append('g')
-	.attr('transform', 'translate(' + (w / 2) + ',' + (h / 2) + ')');
+	.attr('transform', 'translate(' + (w / 2) + ',' + (h / 2) + ')')
+	.style("background", "red")
+	.attr("class", "daca_ineligible_g");
 
-	var daca_ineligible_arc = d3.arc()
+	var daca_ineligible_path = d3.arc()
 	.innerRadius(0)
-	.outerRadius(radius_scale(daca_ineligible_data[0].total));
+	.outerRadius(daca_ineligible_radius);
 
-	var daca_ineligible_path = daca_ineligible_g.selectAll('path')
-	.data(pie(daca_ineligible_data))
-	.enter()
-	.append("g")
-	.style("margin", 0)
-		.append('path')
-		.attr('d', daca_ineligible_arc)
-		.attr("class", "daca_ineligible_path")
-		.attr('fill', function(d,i) {
-			if(d.data.status == 'Employed') { return "#fc8d62";}
-			else if(d.data.status == 'Unemployed') {return "#ffffcc";}
-			else {return "#fff2ae";}
-		})
-		.attr('fill-opacity', '.25')
-		.on("mouseover", function(d) {
-				if(d.data.status == 'Employed') {
+	var daca_ineligible_label = d3.arc()
+		.outerRadius(daca_ineligible_radius)
+		.innerRadius(0);
+
+	var daca_ineligible_arc = daca_ineligible_g.selectAll(".arc")
+		.data(pie(daca_ineligible_data))
+		.enter().append("g")
+			.attr("class", "arc daca_ineligible_arc");
+
+		daca_ineligible_arc.append("path")
+			.attr("d", daca_ineligible_path)
+			.attr("class", "daca_ineligible_path")
+			.attr("fill-opacity", ".25")
+			.attr('fill', function(d) {
+				if(d.data.status == 'Employed') { return "#fc8d62";}
+				else if(d.data.status == 'Unemployed') {return "#ffffcc";}
+				else {return "#fff2ae";}
+			})
+			.on("mouseover", function(d) {
+					if(d.data.status == 'Employed') {
+						d3.select(this)
+							.style("cursor", "pointer")
+							.style("stroke", "black");
+					}
+				})
+			.on("mouseout", function(d) {
 					d3.select(this)
-						.style("cursor", "pointer")
-						.style("stroke", "black");
+						.style("cursor", "none")
+						.style("stroke", "none");
+			})
+			.on("click", function() {
+				d3.select(".daca_ineligible_pie").attr("fill-opacity", "1");
+				d3.selectAll(".undocumented, .daca_ineligible_arc, .daca_ineligible_path").attr("fill-opacity", "1");
+				d3.selectAll(".us, .us_path, .daca_path, .daca, .daca_arc").attr("fill-opacity", ".25");
+			})
+
+		var daca_ineligible_text = daca_ineligible_arc.append("text")
+			// .attr("transform", function(d) {
+			// 	return "translate(" + daca_path.centroid(d)+  ")";
+			// })
+			.attr("transform", function(d) {
+				var c = daca_ineligible_path.centroid(d),
+				x = c[0],
+				y = c[1],
+				h = Math.sqrt(x*x + y*y);
+				 return "translate(" + (x/h * daca_ineligible_radius + 30) +  ',' +
+						 (y/h * (daca_ineligible_radius + 30)) +  ")";
+			})
+			.attr("dy", ".25em")
+			.attr("dx", "-2.75em")
+			.text(function(d) {
+				if(d.data.percent) {
+						return (d.data.percent + "%")
 				}
 			})
-		.on("mouseout", function(d) {
-				d3.select(this)
-					.style("cursor", "none")
-					.style("stroke", "none");
-		})
-		.on("click", function(d) {
-			d3.select(".daca_ineligible_pie").attr("fill-opacity", "1");
-			d3.selectAll(".undocumented, .daca_ineligible_path").attr("fill-opacity", "1");
-			d3.selectAll(".daca, .us, .daca_path, .us_path").attr("fill-opacity", ".25");
-			// d3.select(".daca_pie, .us_pie").attr("fill-opacity", ".25");
-			// d3.select(".us_pie").attr("fill-opacity", ".25");
-		})
+			.style("font-size", "10px")
+			.attr("text-anchor", function(d) {
+				// return "middle";
+					// are we past the center?
+					return (d.endAngle + d.startAngle)/2 > Math.PI ?
+							"end" : "start";
+			})
+		var daca_ineligible_total = daca_ineligible_svg.append("text")
+		.text("Total: " + d3.format(".2s")(parseInt(daca_ineligible_data[0].total)))
+		.attr("fill", "black")
+		.attr("text-anchor", "start")
+		.attr("class", "undocumented")
+		.attr("transform", "translate(60, 155)");
 
 
 	// US PIE ************************************************************************
@@ -289,29 +355,42 @@ function draw_pie_chart() {
 		.append('svg')
 		.attr('class', 'pie us_pie')
 		.attr('width', w)
-		.attr('height', h);
+		.attr('height', h + 100);
+
+	var us_total = us_svg.append("text")
+	.text("Total: " + d3.format(".2s")(parseInt(us_data[0].total)))
+	.attr("fill", "black")
+	.attr("class", "US")
+	.attr("text-anchor", "start")
+	.attr("transform", "translate(60, " + 200 + ")");
 
 	var us_g = us_svg.append('g')
-	.attr('transform', 'translate(' + (w / 2) + ',' + (h / 2) + ')');
+	.attr('transform', 'translate(' + (w / 2) + ',' + (h / 2) + ')')
+	.style("background", "red")
+	.attr("class", "us_g");
 
-	var us_arc = d3.arc()
+	var us_path = d3.arc()
 	.innerRadius(0)
-	.outerRadius(radius_scale(us_data[0].total));
+	.outerRadius(us_radius);
 
-	var us_path = us_g.selectAll('path')
-	.data(pie(us_data))
-	.enter()
-	.append("g")
-	.style("margin", 0)
-		.append('path')
-		.attr('d', us_arc)
+	var us_label = d3.arc()
+		.outerRadius(us_radius)
+		.innerRadius(0);
+
+	var us_arc = us_g.selectAll(".arc")
+		.data(pie(us_data))
+		.enter().append("g")
+			.attr("class", "arc us_arc");
+
+	us_arc.append("path")
+		.attr("d", us_path)
 		.attr("class", "us_path")
-		.attr('fill', function(d,i) {
-			if(d.data.status == 'Employed') { return "#8da0cb";}
+		.attr("fill-opacity", ".25")
+		.attr('fill', function(d) {
+			if(d.data.status == 'Employed') { return "#8da0cc";}
 			else if(d.data.status == 'Unemployed') {return "#ffffcc";}
 			else {return "#fff2ae";}
 		})
-		.attr('fill-opacity', '.25')
 		.on("mouseover", function(d) {
 				if(d.data.status == 'Employed') {
 					d3.select(this)
@@ -323,20 +402,47 @@ function draw_pie_chart() {
 				d3.select(this)
 					.style("cursor", "none")
 					.style("stroke", "none");
-			})
-		.on("click", function(d) {
-			d3.select(".us_pie").attr("fill-opacity", "1");
-			d3.selectAll(".us, .us_path").attr("fill-opacity", "1");
-			d3.selectAll(".daca, .undocumented, .daca_path, .daca_ineligible_path").attr("fill-opacity", ".25");
 		})
-		.append("g").append("text")
-		.attr('transform', 'translate(' + (w / 2) + ',' + (h / 2) + ')')
-		.attr('fill', 'black')
-			.text(function(d) {
-				return d.data.percent;
-			})
+		.on("click", function() {
+			d3.select(".us_pie").attr("fill-opacity", "1");
+			d3.selectAll(".US, .us_path").attr("fill-opacity", "1");
+			d3.selectAll(".undocumented, .daca, .daca_arc, .daca_ineligible_arc, .daca_ineligible_path").attr("fill-opacity", ".25");
+		})
+
+
+
+	var us_text = us_arc.append("text")
+		// .attr("transform", function(d) {
+		// 	return "translate(" + daca_path.centroid(d)+  ")";
+		// })
+		.attr("transform", function(d) {
+			var c = daca_ineligible_path.centroid(d),
+			x = c[0],
+			y = c[1],
+			h = Math.sqrt(x*x + y*y);
+			 return "translate(" + (x/h * us_radius + 30) +  ',' +
+					 (y/h * (us_radius + 30)) +  ")";
+		})
+		.attr("dy", ".25em")
+		.attr("dx", "-2.75em")
+		.text(function(d) {
+			// if(d.data.status) {
+			// 	return d.data.status;
+			// }
+			if(d.data.percent) {
+					return (d.data.percent + "%")
+			}
+		})
+		.style("font-size", "10px")
+		.attr("text-anchor", function(d) {
+			// return "middle";
+				// are we past the center?
+				return (d.endAngle + d.startAngle)/2 > Math.PI ?
+						"end" : "start";
+		})
 
 }
+
 
 function draw_integration() {
 		d3.select("#visuals").remove();
@@ -345,6 +451,7 @@ function draw_integration() {
 			.attr("id", "visuals")
 			.style("padding-top", "75px");
 
+		// draw_timeline();
 		d3.select("#visuals").append("p")
 		.attr("class", "integration_title")
 		.text("Employment Statistics 2017")
