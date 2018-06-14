@@ -160,10 +160,10 @@ function draw_gdp() {
           
             circle.append("text")
               .style("font-weight", "bolder")
-              .attr("class", "total_dollars_text")
+              .attr("class", "total_dollars_text_curr")
               .attr("position", "relative")
               .attr("text-anchor", "middle")
-              .style("transform", "translate(" + width/10 + "px," + ((height/5) + 20) + "px)")
+              .style("transform", "translate(" + width/10.5 + "px," + ((height/5) + 20) + "px)")
               .style("fill", "white")
               .text("Contributed");
 
@@ -234,7 +234,7 @@ function draw_gdp() {
 								.style("fill", function(d) {
 									var value = d.properties.gdp_loss;
 									if (value) {
-										return gdp_loss_color(value);
+										return gdp_current_color(value);
 									} else {
 										return "#ccc";
 									}
@@ -242,6 +242,8 @@ function draw_gdp() {
 								svg_canvas.select(".gdp_legend").call(legend_loss);
 								d3.select(".total_dollars").transition().duration(1000).style("fill", "#52a26b");
 								d3.select(".total_dollars_text").transition().duration(1000).text("$" + loss);
+                                d3.select(".total_dollars_text_curr").text("Contributed");
+                          
 								d3.select(this).style("background", "#3e86bd").text("Naturalized Daca")
 							} else {
 								svg_canvas.selectAll("path")
@@ -257,8 +259,10 @@ function draw_gdp() {
 									svg_canvas.select(".gdp_legend").call(legend_gain).transition().duration(1000);
 									// console.log("total_gain", gain);
 									d3.select(".total_dollars").transition().duration(1000).style("fill", "#3e86bd");
-									d3.select(".total_dollars_text").transition().duration(1000).text("$" + gain + " gain");
-									d3.select(this).style("background", "#52a26b").text("Status Quo")
+									d3.select(".total_dollars_text").transition().duration(1000).text("$" + gain);
+									
+                                    d3.select(".total_dollars_text_curr").text("Gained");
+                                    d3.select(this).style("background", "#52a26b").text("Status Quo");
 							}
 						});
 		}) // END D3.JSON
