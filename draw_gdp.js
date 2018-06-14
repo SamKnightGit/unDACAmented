@@ -21,16 +21,17 @@ function draw_gdp() {
 	var naturalized_daca_btn = d3.select("#visuals").append("button")
 			.attr("class", "toggleBtnGain btn")
 			.style("background", "#52a26b")
-            .style("position", "absolute")
-            .style("top", "90%")
-            .style("left", "43%")
+						.style("position", "absolute")
+						.style("bottom", "-5%")
+						.style("right", "14.25%")
 			.style("margin", "10px")
 			.style("width", "13%")
-			.text("Naturalized DACA");
+			.text("Naturalized DACA")
+			// .attr("transform", "translate(" + width / 2+ ", 800)");
 
 	//Define map projection
 	var projection = d3.geoAlbersUsa()
-	.translate([width/2.2, height / 3])
+	.translate([width / 3, height / 3])
 	.scale([800]);
 
 	// color scale using user defined domain
@@ -44,7 +45,11 @@ function draw_gdp() {
 
 	svg_canvas.append("g")
 	.attr("class", "gdp_legend")
-	.attr("transform", "translate(1200, 200)")
+	.attr("transform", "translate(" + width / 2+ ", 200)");
+
+	var us_map = svg_canvas.append("g")
+	.attr("class", "us_map")
+	.attr("transform", "translate(0, 0)");
 
 	var gdp_loss_legend = d3.scaleQuantile()
 		.domain([1000000, 100000000, 500000000, 1000000000, 5000000000, 14000000000])
@@ -123,22 +128,26 @@ function draw_gdp() {
 
 			var circle = svg_canvas.append("g");
 			circle.append("circle")
-            .attr("cx", width/4.5)
-            .attr("cy", height/4)
+						.attr("cx", width / 9)
+						.attr("cy", height/5)
 			.attr("r", 75)
 			.attr("id", "total")
 			.attr("class", "total_dollars")
 			.style("fill", "#b74046");
 
+			// var rectangle = svg_canvas.append("g");
+			// rectangle.append("rectangle")
+			// 			.attr("x", width / 2)
+			// 			.attr("y", )
 			// var total_dollars_circle = svg_canvas
 
 			circle.append("text")
 			// .style("stroke", "white")
 			.style("font-weight", "bolder")
 			.attr("class", "total_dollars_text")
-            .attr("position", "relative")
-            .attr("text-anchor", "middle")
-			.style("transform", "translate(" + width/4.5 + "px," + height/4 + "px)")
+						.attr("position", "relative")
+						.attr("text-anchor", "middle")
+			.style("transform", "translate(" + width/9 + "px," + height/5 + "px)")
 			.style("fill", "white")
 			.text("$" + loss + " Loss");
 
@@ -156,7 +165,7 @@ function draw_gdp() {
 
 
 
-			svg_canvas.selectAll("path")
+			us_map.selectAll("path")
 				 .data(json.features)
 				 .enter()
 				 .append("path")
@@ -252,6 +261,6 @@ function draw_gdp() {
 		.attr("font-size", "20px")
 		.attr("font-weight", "bold")
 	 .text("DACA Workers' GDP Contribution, 2017")
-	
+
 
 }
