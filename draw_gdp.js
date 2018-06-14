@@ -17,20 +17,79 @@ function draw_gdp() {
 
 	var tooltip = d3.select("#visuals").append("div")
 			.attr("class", "tooltip card")
-			.style("width", width/8)
+			.style("width", width/7.5)
 			.style("border", "1px solid black")
-			.style("opacity", 1)
+			.style("opacity", 0)
 			.style("position", "absolute")
 			.style("bottom", "9%")
-			.style("left", "5%")
+			.style("left", "4%")
 			.style("margin", "10px")
-			.style("padding", "10px");
+			.style("padding", "10px")
+            .style("padding-top", "0px")
+            .style("padding-bottom", "0px");
 
 	tooltip.append("p").attr("class", "state_name")
-		.style("font-weight", "bolder");
-	tooltip.append("p").attr("class", "money_loss");
-	tooltip.append("p").attr("class", "money_gain");
-	tooltip.append("p").attr("class", "population");
+		.style("font-weight", "bolder")
+        .style("margin-bottom", "2px");
+        
+    var tt_gdp_row = tooltip.append("div")
+      .attr("class", "row")
+      .style("margin-bottom", "0px");
+  
+    var tt_gdp_label = tt_gdp_row.append("div")
+      .attr("class", "col s7")
+      .style("padding-right", "0px")
+        .append("p")
+      .text("GDP Contributed")
+      .style("text-align", "left");
+  
+    tt_gdp_row.append("div")
+      .attr("class", "col s1")
+      .append("p").text(":");
+  
+	tt_gdp_row.append("div")
+      .attr("class", "col s3")
+      .style("padding-left", "0px")
+      .style("padding-right", "0px")
+        .append("p")
+      .attr("class", "money_loss")
+      .style("text-align", "right")
+      .style("margin-right", "2px");
+  
+	tt_gdp_row.append("div")
+      .attr("class", "col s3")
+      .style("padding-left", "0px")
+      .style("padding-right", "0px")
+        .append("p")
+      .attr("class", "money_gain")
+      .style("text-align", "right")
+      .style("margin-right", "2px");
+    
+    
+    var tt_pop_row = tooltip.append("div")
+      .attr("class", "row")
+      .style("margin-top", "0px")
+      .style("margin-bottom", "10px");
+  
+    var tt_pop_label = tt_pop_row.append("div")
+      .attr("class", "col s7")
+      .style("padding-right", "0px")
+        .append("p")
+      .text("DACA Population")
+      .style("text-align", "left");
+  
+    tt_pop_row.append("div")
+      .attr("class", "col s1")
+      .append("p").text(":");
+  
+	tt_pop_row.append("div")
+      .attr("class", "col s3")
+      .style("padding-left", "0px")
+      .style("padding-right", "0px")
+        .append("p")
+      .attr("class", "population")
+      .style("text-align", "right")
+      .style("margin-right", "2px");
 
 	var checkTog = function() {
 		console.log("checking togg");
@@ -50,8 +109,8 @@ function draw_gdp() {
 			.attr("class", "toggleBtnGain btn")
 			.style("background", "#3e86bd")
 						.style("position", "absolute")
-						.style("bottom", "10%")
-						.style("right", "12%")
+						.style("bottom", "15%")
+						.style("right", "8%")
 			.style("margin", "10px")
 			.style("width", "15%")
 			.text("Naturalized DACA")
@@ -225,10 +284,18 @@ function draw_gdp() {
 						 tooltip.transition()
 							 .duration(200)
 							 .style('opacity', .9);
-						d3.select(".money_loss").text("GDP Contributed: $" + d3.format(".2s")(parseInt(d.properties.gdp_loss)).replace(/G/,"B"));
-						d3.select(".money_gain").text("GDP Gain: $" + d3.format(".2s")(parseInt(d.properties.gdp_gain)).replace(/G/,"B") + "++");
+						d3.select(".money_loss").text("$" + d3.format(".2s")(parseInt(d.properties.gdp_loss)).replace(/G/,"B"));
+						d3.select(".money_gain").text(function() { 
+                          if(parseInt(d.properties.gdp_gain)) {
+                            return "$" + d3.format(".2s")(parseInt(d.properties.gdp_gain)).replace(/G/,"B");
+                          }
+                          else {
+                            return "No Data"
+                          }
+                        });
+                          
 						d3.select(".state_name").text(d.properties.name);
-						d3.select(".population").text("Daca Population: " + d3.format(".2s")(parseInt(d.properties.daca_pop)).replace(/G/,"B"));
+						d3.select(".population").text(d3.format(".2s")(parseInt(d.properties.daca_pop)).replace(/G/,"B"));
 						checkTog();
 
 						 // tooltip.html(
@@ -288,7 +355,7 @@ function draw_gdp() {
 									d3.select(".total_dollars").transition().duration(1000).style("fill", "#3e86bd");
 									d3.select(".total_dollars_text").transition().duration(1000).text("$" + gain);
 									d3.select(".total_dollars_text_curr").text("Gained");
-									d3.select(this).style("background", "#52a26b").text("Status Quo");
+									d3.select(this).style("background", "#52a26b").text("Current DACA"); 
 							}
 						});
 		}) // END D3.JSON

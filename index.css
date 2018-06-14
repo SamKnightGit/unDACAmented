@@ -35,6 +35,16 @@ div.world_tooltip {
 	pointer-events: none;
 }
 
+div.potential_text {
+  position: absolute;
+  top: 100%;
+  left: 20%;
+}
+
+ul.footnote_list {
+  list-style-type:circle !important;
+}
+
 div.main_tooltip {
 	width: 25%;
 	height: 30%;
