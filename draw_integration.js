@@ -68,9 +68,9 @@ function draw_employment() {
 					.attr("dy", ".35em")
 					.style("text-anchor", "end")
 					.text(function(d) {
-                      var split = d.split(" ")[1];
-                      return split + " Workers";
-                    });
+											var split = d.split(" ")[1];
+											return split + " Workers";
+										});
 
 			g.append("g")
 				.selectAll("g")

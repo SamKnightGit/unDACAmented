@@ -404,7 +404,7 @@ function draw_origin() {
 	var world_projection = d3.geoNaturalEarth1()
 		.scale(width/12)
 		.translate([(3*width)/4,height/2.8]);
-  
+
 	var world_path = d3.geoPath()
 			.projection(world_projection);
 
