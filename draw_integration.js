@@ -76,7 +76,7 @@ function draw_employment(width, height) {
 											console.log("split", split);
 											// console.log(split === "Undocumented");
 											if(split === "Undocumented") {
-												return "Daca-inelig. Workers";
+												return "Daca-inelig.^ Workers";
 											}
 											return split + " Workers";
 										});
@@ -511,7 +511,7 @@ function draw_pie_chart(width, height) {
 							"end" : "start";
 			})
 		var daca_ineligible_total = daca_ineligible_svg.append("text")
-		.text("Total* Daca-inelig. Pop.: " + d3.format(".2s")(parseInt(daca_ineligible_data[0].total)))
+		.text("Total* Daca-inelig.^ Pop.: " + d3.format(".2s")(parseInt(daca_ineligible_data[0].total)))
 		.attr("fill", "black")
 		.attr("text-anchor", "start")
 		.attr("class", "undocumented")
@@ -669,6 +669,10 @@ function draw_integration() {
 		d3.select("#visuals").append("p")
 		.attr("class", "footnote")
 		.text("** Persons not in the labor force by desire and availability for work, age, and sex ")
+
+		d3.select("#visuals").append("p")
+		.attr("class", "footnote")
+		.text("^ Daca-ineligible immigrants are undocumented immigrants who do not meet the following requirements: must be under 31 years of age as of June 15, 2012, came to the US while under 16, have continuoulsy resided in U.S from June 15, 2007, passed a criminal background check.");
 
 		d3.select(".footnote").style("text-align", "left");
 
