@@ -11,7 +11,7 @@ $(document).ready(function() {
 			$( btn_ids[i] ).removeClass('blue');
 			$( btn_ids[i] ).addClass('grey');
 			$( label_ids[i] ).removeClass('label_selected');
-			$( label_ids[i] ).addClass('label');
+			$( label_ids[i] ).addClass('labels');
 		}
 	}
 
@@ -21,7 +21,7 @@ $(document).ready(function() {
 			reset_selected();
 			$( this ).removeClass('grey');
 			$( this ).addClass('blue');
-			$( '#Origin_Label' ).removeClass('label');
+			$( '#Origin_Label' ).removeClass('labels');
 			$( '#Origin_Label' ).addClass('label_selected');
 			draw_origin();
 		}
@@ -32,7 +32,7 @@ $(document).ready(function() {
 			reset_selected();
 			$( this ).removeClass('grey');
 			$( this ).addClass('blue');
-			$( '#Integration_Label' ).removeClass('label');
+			$( '#Integration_Label' ).removeClass('labels');
 			$( '#Integration_Label' ).addClass('label_selected');
 			draw_integration();
 		}
@@ -43,7 +43,7 @@ $(document).ready(function() {
 			reset_selected();
 			$( this ).removeClass('grey');
 			$( this ).addClass('blue');
-			$( '#GDP_Label' ).removeClass('label');
+			$( '#GDP_Label' ).removeClass('labels');
 			$( '#GDP_Label' ).addClass('label_selected');
 			console.log("gdp btn clicked");
 			$("#visuals").toggle();

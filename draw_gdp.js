@@ -166,7 +166,6 @@ function draw_gdp() {
 	.title("GDP Gain in millions annually")
 	.titleWidth(400);
 
-
 	svg_canvas.select(".gdp_legend").call(legend_loss);
 
 	// Define path generator
@@ -452,8 +451,14 @@ function draw_gdp() {
 		}) // END D3.JSON
 	}) // END D3.CSV
 
+	$('.label').each( function(){
+		var string = $(this).text();
+		string = string.replace(/G/,"B");
+		string = string.replace(/G/,"B");
+		$(this).html(string);
 
-
+	 }
+);
 	// Placeholder for visuals
 	var title = svg_canvas.append("text")
 		 .attr("class", "canvas_title")
