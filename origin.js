@@ -67,18 +67,15 @@ var region_scale = d3.scaleBand()
 
 var greens = d3.schemeGreens[5];
 
-var color = d3.scaleQuantile()
-	.domain([0, 5, 10, 25, 50, 100])
+var color = d3.scaleThreshold()
+	.domain([1, 5, 20, 50, 100])
 	.range(greens);
 
-
-
-var start = width*0.7475;
-var end = width*0.8425;
+var key_base = width/1.45;
 var key_scale = d3.scalePow()
-		.exponent(0.55)
-	.domain([20, 100, 200, 500, 1000])
-	.rangeRound([start, end]);
+    .exponent(0.5)
+	.domain([0, 100])
+	.rangeRound([key_base, key_base*1.25]);
 
 function build_pop(state_pop) {
 	for (var property in state_pop) {
@@ -360,7 +357,10 @@ function draw_origin() {
 		.attr("height", height);
 
 	var main_tooltip = d3.select("#visuals").append("div")
-		.attr("class", "main_tooltip");
+		.attr("class", "main_tooltip")
+        .style("position", "absolute")
+        .style("top", "50%")
+        .style("left", "37.5%");
 
 	var row_title = main_tooltip.append("div")
 		.attr("class", "row")
@@ -425,42 +425,22 @@ function draw_origin() {
 	key.selectAll("rect")
 		.data(color.range().map(function(d) {
 			d = color.invertExtent(d);
+            if (d[0] == null) d[0] = key_scale.domain()[0];
+            if (d[1] == null) d[1] = key_scale.domain()[1];
 			return d;
 		}))
 		.enter().append("rect")
 			.attr("height", 12)
-			.attr("x", function(d, i) {
-							var base = width*0.72;
-							switch(i) {
-									case 0:
-										return base;
-										break;
-									case 1:
-										return base+25;
-										break;
-									case 2:
-										return base+50;
-										break;
-									case 3:
-										return base+100;
-										break;
-									case 4:
-										return base+160;
-										break;
-									default:
-										return base;
-							}
-
-
-						})
+			.attr("x", function(d) { return key_scale(d[0]); })
 			.attr("width", function(d) {
-							return 20*(Math.log(d[1]-d[0]));
+                            console.log(key_scale(d[1])-key_scale(d[0]));
+							return key_scale(d[1])-key_scale(d[0]);
 						})
 			.attr("fill", function(d, i) { return color(d[0]); });
 
 	key.append("text")
 			.attr("class", "caption")
-			.attr("x", "74%")
+			.attr("x", "73%")
 			.attr("y", -10)
 			.style("font-size", "12px")
 			.attr("fill", "#000")
@@ -473,7 +453,7 @@ function draw_origin() {
 			.tickFormat(function(x) {
 					return x + "%";
 			})
-			.tickValues([5, 10, 25, 50]))
+			.tickValues([1, 5, 20, 50]))
 		.select(".domain")
 			.remove();
 
