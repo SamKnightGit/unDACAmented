@@ -14,18 +14,24 @@ function draw_gdp() {
 		.attr("border", "1px sold red;");
 
 	var tooltip = d3.select("#visuals").append("div")
-			.attr("class", "tooltip")
-			.attr("width", width/4)
-			.style("opacity", 1);
+			.attr("class", "tooltip card")
+			.style("width", width/8)
+			.style("border", "1px solid black")
+			.style("opacity", 1)
+			.style("position", "absolute")
+			.style("bottom", "9%")
+			.style("left", "5%")
+			.style("margin", "10px")
+			.style("padding", "10px");
 
 	var naturalized_daca_btn = d3.select("#visuals").append("button")
 			.attr("class", "toggleBtnGain btn")
-			.style("background", "#52a26b")
+			.style("background", "#3e86bd")
 						.style("position", "absolute")
-						.style("bottom", "-5%")
-						.style("right", "14.25%")
+						.style("bottom", "10%")
+						.style("right", "12%")
 			.style("margin", "10px")
-			.style("width", "13%")
+			.style("width", "15%")
 			.text("Naturalized DACA")
 			// .attr("transform", "translate(" + width / 2+ ", 800)");
 
@@ -37,11 +43,12 @@ function draw_gdp() {
 	// color scale using user defined domain
 	var gdp_loss_color = d3.scaleQuantile()
 		.domain([1000000, 100000000, 500000000, 1000000000, 5000000000, 14000000000])
-		.range(["#fcbba1","#fc9272","#fb6a4a","#de2d26","#a50f15"]);
+		.range(["#ccece6", "#66c2a4", "#41ae76", "#238b45", "#005824"]);
 
 	var gdp_gain_color = d3.scaleQuantile()
 		.domain([1000000, 100000000, 500000000, 1000000000, 5000000000, 14000000000])
-		.range(["#ccece6", "#66c2a4", "#41ae76", "#238b45", "#005824"]);
+		.range(["#f0f9e8","#bae4bc","#7bccc4","#43a2ca","#0868ac"]);
+
 
 	svg_canvas.append("g")
 	.attr("class", "gdp_legend")
@@ -53,11 +60,11 @@ function draw_gdp() {
 
 	var gdp_loss_legend = d3.scaleQuantile()
 		.domain([1000000, 100000000, 500000000, 1000000000, 5000000000, 14000000000])
-		.range(["#fcbba1","#fc9272","#fb6a4a","#de2d26","#a50f15"]);
+		.range(["#ccece6", "#66c2a4", "#41ae76", "#238b45", "#005824"]);
 
 	var gdp_gain_legend = d3.scaleQuantile()
 		.domain([1000000, 100000000, 500000000, 1000000000, 5000000000, 14000000000])
-		.range(["#ccece6", "#66c2a4", "#41ae76", "#238b45", "#005824"]);
+		.range(["#f0f9e8","#bae4bc","#7bccc4","#43a2ca","#0868ac"]);
 
 	var legend_loss = d3.legendColor()
 	// .shapeWidth(25)
@@ -128,12 +135,12 @@ function draw_gdp() {
 
 			var circle = svg_canvas.append("g");
 			circle.append("circle")
-						.attr("cx", width / 9)
+						.attr("cx", width / 10.5)
 						.attr("cy", height/5)
 			.attr("r", 75)
 			.attr("id", "total")
 			.attr("class", "total_dollars")
-			.style("fill", "#b74046");
+			.style("fill", "#52a26b");
 
 			// var rectangle = svg_canvas.append("g");
 			// rectangle.append("rectangle")
@@ -147,7 +154,7 @@ function draw_gdp() {
 			.attr("class", "total_dollars_text")
 						.attr("position", "relative")
 						.attr("text-anchor", "middle")
-			.style("transform", "translate(" + width/9 + "px," + height/5 + "px)")
+			.style("transform", "translate(" + width/10.5 + "px," + height/5 + "px)")
 			.style("fill", "white")
 			.text("$" + loss + " Loss");
 
@@ -188,7 +195,7 @@ function draw_gdp() {
 							 .style('opacity', .9);
 						// tooltip.text(d.country)
 						 tooltip.html(
-							 "<br>State: " + d.properties.name +
+							 "<strong>" + d.properties.name + "</strong>" +
 							 "<br>GDP Loss: " + d.properties.gdp_loss +
 							 "<br>Daca Population: " + d.properties.daca_pop
 						 ).style("transform", "translate(" + width/2 + ", -200px)")
@@ -201,13 +208,13 @@ function draw_gdp() {
 					 })
 
 				// Defining Button Interactivity
-				// var togData = false;
-				d3.select(".toggleBtnLoss")
+				var togData = false;
+				d3.select(".toggleBtnGain")
 					.on("click", function(){
 						// Determine if current line is visible
-						// togData=!togData;
+						togData=!togData;
 						//console.log(togData);
-						// if (togData == true){
+						if (togData == false){
 							svg_canvas.selectAll("path")
 								.transition().duration(1000)
 								.style("fill", function(d) {
@@ -219,32 +226,26 @@ function draw_gdp() {
 									}
 								});
 								svg_canvas.select(".gdp_legend").call(legend_loss);
-								d3.select(".total_dollars").transition().duration(1000).style("fill", "#b74046");
-								d3.select(".total_dollars_text").transition().duration(1000).text("$" + loss);
-						});
-				d3.select(".toggleBtnGain")
-					.on("click", function(){
-						// Determine if current line is visible
-						// togData=!togData;
-						//console.log(togData);
-						// if (togData == true){
-							svg_canvas.selectAll("path")
-								.transition().duration(1000)
-								.style("fill", function(d) {
-									var value = d.properties.gdp_gain;
-									if (value) {
-										return gdp_gain_color(value);
-									} else {
-										return "#ccc";
-									}
-								});
-								svg_canvas.select(".gdp_legend").call(legend_gain).transition().duration(1000);
-								// console.log("total_gain", gain);
 								d3.select(".total_dollars").transition().duration(1000).style("fill", "#52a26b");
-								d3.select(".total_dollars_text").transition().duration(1000).text("$" + gain + " gain");
-							// } else {
-
-							// }
+								d3.select(".total_dollars_text").transition().duration(1000).text("$" + loss);
+								d3.select(this).style("background", "#3e86bd").text("Naturalized Daca")
+							} else {
+								svg_canvas.selectAll("path")
+									.transition().duration(1000)
+									.style("fill", function(d) {
+										var value = d.properties.gdp_gain;
+										if (value) {
+											return gdp_gain_color(value);
+										} else {
+											return "#ccc";
+										}
+									});
+									svg_canvas.select(".gdp_legend").call(legend_gain).transition().duration(1000);
+									// console.log("total_gain", gain);
+									d3.select(".total_dollars").transition().duration(1000).style("fill", "#3e86bd");
+									d3.select(".total_dollars_text").transition().duration(1000).text("$" + gain + " gain");
+									d3.select(this).style("background", "#52a26b").text("Status Quo")
+							}
 						});
 		}) // END D3.JSON
 	}) // END D3.CSV

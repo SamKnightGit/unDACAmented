@@ -209,7 +209,7 @@ function draw_pie_chart() {
 		.attr("class", daca_path)
 		.attr('fill', function(d) {
 			if(d.data.status == 'Employed') { return "#66c2a5";}
-			else if(d.data.status == 'Unemployed') {return "#ffffcc";}
+			else if(d.data.status == 'Unemployed') {return "#bababa";}
 			else {return "#fff2ae";}
 		})
 		.on("mouseover", function(d) {
@@ -295,7 +295,7 @@ function draw_pie_chart() {
 			.attr("fill-opacity", ".25")
 			.attr('fill', function(d) {
 				if(d.data.status == 'Employed') { return "#fc8d62";}
-				else if(d.data.status == 'Unemployed') {return "#ffffcc";}
+				else if(d.data.status == 'Unemployed') {return "#bababa";}
 				else {return "#fff2ae";}
 			})
 			.on("mouseover", function(d) {
@@ -388,7 +388,7 @@ function draw_pie_chart() {
 		.attr("fill-opacity", ".25")
 		.attr('fill', function(d) {
 			if(d.data.status == 'Employed') { return "#8da0cc";}
-			else if(d.data.status == 'Unemployed') {return "#ffffcc";}
+			else if(d.data.status == 'Unemployed') {return "#bababa";}
 			else {return "#fff2ae";}
 		})
 		.on("mouseover", function(d) {
