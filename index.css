@@ -36,11 +36,8 @@ div.world_tooltip {
 }
 
 div.main_tooltip {
-	position: absolute;
-	top: 70%;
-	left: 38%;
-	width: auto;
-	height: 29%;
+	width: 25%;
+	height: 30%;
 	padding: 10px;
 	border: solid 1px black;
 }
