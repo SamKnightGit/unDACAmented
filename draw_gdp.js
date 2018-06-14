@@ -427,6 +427,7 @@ function draw_gdp() {
 								d3.select(".total_dollars_text_curr").text("Contributed");
 								d3.select(this).style("background", "#3e86bd").text("Naturalized Daca")
 								title.text("DACA Workers' GDP Contribution, 2017");
+								format_label();
 							} else {
 								svg_canvas.selectAll("path")
 									.transition().duration(1000)
@@ -445,19 +446,23 @@ function draw_gdp() {
 									d3.select(".total_dollars_text_curr").text("Gained *");
 									d3.select(this).style("background", "#52a26b").text("Current DACA");
 									title.text("Economic Benefits of Naturalizing DACA Recipients 2017");
+									format_label();
 							}
 						});
 		}) // END D3.JSON
 	}) // END D3.CSV
+	var format_label = function() {
+			$('.label').each( function(){
+				var string = $(this).text();
+				string = string.replace(/G/,"B");
+				string = string.replace(/G/,"B");
+				$(this).html(string);
+			})
+	}
 
-	$('.label').each( function(){
-		var string = $(this).text();
-		string = string.replace(/G/,"B");
-		string = string.replace(/G/,"B");
-		$(this).html(string);
+	format_label();
 
-	 }
-);
+// );
 	// Placeholder for visuals
 	var title = svg_canvas.append("text")
 		 .attr("class", "canvas_title")
