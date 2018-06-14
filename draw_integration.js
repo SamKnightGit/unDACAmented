@@ -13,9 +13,9 @@ function draw_employment() {
 		}
 
 	var bar_canvas = d3.select("#bar_svg").append("svg")
-			.attr("class", "card")
+			// .attr("class", "card")
 			.attr("width", "100%")
-			.attr("height", 600);
+			.attr("height", 722);
 
 		var margin = {top: 40, right: 100, bottom: 150, left: 100},
 			width = parseInt(bar_canvas.style("width").replace("px", "") ) - margin.left - margin.right,
@@ -51,12 +51,22 @@ function draw_employment() {
 				.data(keys)
 				.enter().append("g")
 				.attr("class", "legend")
+				.attr("class", function(d) {
+					return d;
+				})
 				.attr("transform", function(d, i) { return "translate(110," + (50 +  (i * 25)) + ")"; });
 
 			legend.append("rect")
 					.attr("x", width - 18)
 					.attr("width", 18)
 					.attr("height", 18)
+					.attr("class", function(d) {
+						return d;
+					})
+					.style("opacity", function(d) {
+						console.log("d", d);
+						return d === ' DACA Percent' ? "1" : ".25";
+					})
 					.style("fill", function(d) {
 						return z(d);
 					});
@@ -68,6 +78,11 @@ function draw_employment() {
 					.style("text-anchor", "end")
 					.text(function(d) {
 											var split = d.split(" ")[1];
+											console.log("split", split);
+											// console.log(split === "Undocumented");
+											if(split === "Undocumented") {
+												return "Daca-inelig. Workers";
+											}
 											return split + " Workers";
 										});
 
@@ -175,15 +190,142 @@ function draw_pie_chart() {
 	.value(function(d) { return d.percent; })
 	.sort(null);
 
+
+	// PIE LEGEND ********************************************************************
+	var legend_svg = d3.select("#pie_svg")
+		.append("svg")
+		.attr("width", w)
+		.attr("height", 60)
+		.attr('transform', 'translate(0,' + (h / 8) + ')')
+
+	var legend = legend_svg.append('g')
+		.attr('transform', 'translate(0,0)');
+
+	// key for not in labor force
+	legend.append("rect")
+		.attr("x", 0)
+		.attr("y", 0)
+		.attr("width", 20)
+		.attr("height", 10)
+		// .attr("class", "daca")
+		.style("fill", "#fef2af");
+
+	legend.append("text")
+		.attr("fill", "black")
+		.text("Not in Labor Force **")
+		.attr("dx", w/4)
+		.attr("dy", 10)
+		.style("font-size", "12px");
+
+	legend.append("line")
+		.style("stroke", "black")
+		.attr("x1", 20)
+		.attr("x2", w/4 - 5)
+		.attr("y1", 5.5)
+		.attr("y2", 5.5);
+
+	// key for unemployed
+	legend.append("rect")
+		.attr("x", 0)
+		.attr("y", 11)
+		.attr("width", 20)
+		// .attr("class", "daca")
+		.attr("height", 10)
+		.style("fill", "#bababa");
+
+	legend.append("line")
+		.style("stroke", "black")
+		.attr("x1", 20	)
+		.attr("x2", w/4 - 5)
+		.attr("y1", 16.5)
+		.attr("y2", 16.5);
+
+	legend.append("text")
+		.attr("fill", "black")
+		.text("Unemployed")
+		.attr("dx", w/4)
+		.attr("dy", 22.5)
+		.style("font-size", "12px");
+
+	// key for daca employed
+	legend.append("rect")
+		.attr("x", 0)
+		.attr("y", 22)
+		.attr("width", 20)
+		.attr("class", "daca daca_legend")
+		.attr("height", 10)
+		.style("fill", "#65c2a5");
+
+	legend.append("line")
+		.style("stroke", "grey")
+		.attr("x1", 20)
+		.attr("x2", 25)
+		.attr("y1", 27)
+		.attr("y2", 27);
+
+	// key for unauthorized employed
+	legend.append("rect")
+		.attr("x", 0)
+		.attr("y", 33)
+		.attr("width", 20)
+		.attr("class", "undocumented undocumented_legend")
+		.attr("height", 10)
+		.style("fill", "#fc8d62");
+
+	legend.append("line")
+		.style("stroke", "grey")
+		.attr("x1", 20)
+		.attr("x2", 25)
+		.attr("y1", 38)
+		.attr("y2", 38);
+
+	// key for us employed
+	legend.append("rect")
+		.attr("x", 0)
+		.attr("y", 44)
+		.attr("width", 20)
+		.attr("class", "us us_legend")
+		.attr("height", 10)
+		.style("fill", "#8da0cc");
+
+	legend.append("line")
+		.style("stroke", "grey")
+		.attr("x1", 20)
+		.attr("x2", 25)
+		.attr("y1", 49)
+		.attr("y2", 49);
+
+	legend.append("line")
+		.style("stroke", "grey")
+		.attr("x1", 25)
+		.attr("x2", 25)
+		.attr("y1", 27)
+		.attr("y2", 49);
+
+	legend.append("line")
+		.style("stroke", "grey")
+		.attr("x1", 20)
+		.attr("x2", w/4 - 5)
+		.attr("y1", 38)
+		.attr("y2", 38);
+
+
+	legend.append("text")
+		.attr("fill", "black")
+		.text("Employed")
+		.attr("dx", w/4)
+		.attr("dy", 42)
+		.style("font-size", "12px");
+
 	// DACA PIE **********************************************************************
-	var svg = d3.select("#pie_svg")
+	var daca_svg = d3.select("#pie_svg")
 	.append('svg')
 	.attr('class', 'pie daca_pie')
-	.attr('width', w)
+	.attr('width', "100%")
 	.attr('height', h + 20);
 
-	var daca_g = svg.append('g')
-	.attr('transform', 'translate(' + (w / 2) + ',' + (height / 4) + ')')
+	var daca_g = daca_svg.append('g')
+	.attr('transform', 'translate(' + (w / 2) + ',' + (h / 2) + ')')
 	.attr("class", "daca_g");
 
 	var daca_path = d3.arc()
@@ -222,7 +364,9 @@ function draw_pie_chart() {
 		.on("click", function() {
 			d3.select(".daca_pie").attr("fill-opacity", "1");
 			d3.selectAll(".daca, .daca_path, .daca_arc").attr("fill-opacity", "1");
-			d3.selectAll(".undocumented, .us, .us_path, .daca_ineligible_path").attr("filit l-opacity", ".25");
+			d3.selectAll(".daca, .daca_path, .daca_arc").style("opacity", "1");
+			d3.selectAll(".Undocumented, .us, .us_path, .daca_ineligible_path, .daca_ineligible_arc").attr("fill-opacity", ".25");
+			d3.selectAll(".Undocumented, .us, .us_path, .daca_ineligible_path, .daca_ineligible_arc").style("opacity", ".75");
 		})
 
 	var daca_text = daca_arc.append("text")
@@ -251,22 +395,22 @@ function draw_pie_chart() {
 				return (d.endAngle + d.startAngle)/2 > Math.PI ?
 						"end" : "start";
 		})
-		var daca_total = svg.append("text")
-		.text("Total: " + d3.format(".2s")(parseInt(daca_data[0].total)) + "*")
+		var daca_total = daca_svg.append("text")
+		.text("Total* Daca Pop.: " + d3.format(".2s")(parseInt(daca_data[0].total)).replace(/k/,"K"))
 		.attr("fill", "black")
 		.attr("class", "daca")
 		.attr("text-anchor", "start")
-		.attr("transform", "translate(60, 160)");
+		.attr("transform", "translate(40, 160)");
 
 
 	// DACA INELIGIBLE PIE ***********************************************************
-	// var svg = d3.select("#pie_svg")
-	// 	.append('svg')
-	// 	.attr('class', 'pie daca_ineligible_pie')
-	// 	.attr('width', w)
-	// 	.attr('height', h + 20);
+	var daca_ineligible_svg = d3.select("#pie_svg")
+		.append('svg')
+		.attr('class', 'pie daca_ineligible_pie')
+		.attr('width', "100%")
+		.attr('height', h + 20);
 
-	var daca_ineligible_g = svg.append('g')
+	var daca_ineligible_g = daca_ineligible_svg.append('g')
 	.attr('transform', 'translate(' + (w / 2) + ',' + (h / 2) + ')')
 	.style("background", "red")
 	.attr("class", "daca_ineligible_g");
@@ -307,8 +451,11 @@ function draw_pie_chart() {
 			})
 			.on("click", function() {
 				d3.select(".daca_ineligible_pie").attr("fill-opacity", "1");
+				// d3.select(".daca_ineligible_pie").style("opacity", "1");
 				d3.selectAll(".undocumented, .daca_ineligible_arc, .daca_ineligible_path").attr("fill-opacity", "1");
+				d3.selectAll(".undocumented, .daca_ineligible_arc, .daca_ineligible_path").style("opacity", "1");
 				d3.selectAll(".us, .us_path, .daca_path, .daca, .daca_arc").attr("fill-opacity", ".25");
+				d3.selectAll(".us, .us_path, .daca_path, .daca, .daca_arc").style("opacity", ".75");
 			})
 
 		var daca_ineligible_text = daca_ineligible_arc.append("text")
@@ -337,30 +484,30 @@ function draw_pie_chart() {
 					return (d.endAngle + d.startAngle)/2 > Math.PI ?
 							"end" : "start";
 			})
-		var daca_ineligible_total = svg.append("text")
-		.text("Total: " + d3.format(".2s")(parseInt(daca_ineligible_data[0].total)) + "*")
+		var daca_ineligible_total = daca_ineligible_svg.append("text")
+		.text("Total* Daca-inelig. Pop.: " + d3.format(".2s")(parseInt(daca_ineligible_data[0].total)))
 		.attr("fill", "black")
 		.attr("text-anchor", "start")
 		.attr("class", "undocumented")
-		.attr("transform", "translate(60, 155)");
+		.attr("transform", "translate(20, 155)");
 
 
 	// US PIE ************************************************************************
-	// var svg = d3.select("#pie_svg")
-	// 	.append('svg')
-	// 	.attr('class', 'pie us_pie')
-	// 	.attr('width', w)
-	// 	.attr('height', h + 50);
+	var us_svg = d3.select("#pie_svg")
+		.append('svg')
+		.attr('class', 'pie us_pie')
+		.attr('width', "100%")
+		.attr('height', h + 50);
 
-	var us_total = svg.append("text")
-	.text("Total: " + d3.format(".2s")(parseInt(us_data[0].total)) + "*")
+	var us_total = us_svg.append("text")
+	.text("Total* US Pop.: " + d3.format(".2s")(parseInt(us_data[0].total)))
 	.attr("fill", "black")
 	.attr("class", "US")
 	.attr("text-anchor", "start")
-	.attr("transform", "translate(60, " + 200 + ")");
+	.attr("transform", "translate(40, " + 200 + ")");
 
-	var us_g = svg.append('g')
-	.attr('transform', 'translate(' + (w / 2) + ',' + (height / 2) + ')')
+	var us_g = us_svg.append('g')
+	.attr('transform', 'translate(' + (w / 2) + ',' + (h / 2) + ')')
 	.style("background", "red")
 	.attr("class", "us_g");
 
@@ -401,7 +548,9 @@ function draw_pie_chart() {
 		.on("click", function() {
 			d3.select(".us_pie").attr("fill-opacity", "1");
 			d3.selectAll(".US, .us_path").attr("fill-opacity", "1");
+			d3.selectAll(".US, .us_path").style("opacity", "1");
 			d3.selectAll(".undocumented, .daca, .daca_arc, .daca_ineligible_arc, .daca_ineligible_path").attr("fill-opacity", ".25");
+			d3.selectAll(".undocumented, .daca, .daca_arc, .daca_ineligible_arc, .daca_ineligible_path").style("opacity", ".75");
 		})
 
 
@@ -449,7 +598,7 @@ function draw_integration() {
 		// draw_timeline();
 		d3.select("#visuals").append("p")
 		.attr("class", "integration_title")
-		.text("Employment Statistics 2017")
+		.text("Employment Statistics of DACA, DACA-ineligible, and US population 2017")
 		.style("font-size", "20px")
 		.style("font-weight", "bold")
 		.attr("transform", "translate(0, 45)");
@@ -461,13 +610,32 @@ function draw_integration() {
 
 		d3.select("#visuals").append("div")
 		.attr("id", "bar_svg")
-		.attr("class", "col s9");
+		.attr("class", "col s9 card");
+
+		d3.select("#bar_svg")
+			.style("text-align", "center")
+			.text("Occupation by industry 2017")
+			.style("font-size", "15px")
+			.style("padding", "10px")
+			.style("font-weight", "bolder");
+
+		d3.select("#pie_svg").append("p")
+			.style("text-align", "center")
+			.text("Employment Rate 2017")
+			.style("font-size", "15px")
+			.style("font-weight", "bolder");
 
 		draw_pie_chart();
 		draw_employment();
 
-		d3.select("#pie_svg").append("p")
+		d3.select("#visuals").append("p")
 		.attr("class", "footnote")
 		.text("* Total population age 16 and over")
+
+		d3.select("#visuals").append("p")
+		.attr("class", "footnote")
+		.text("** Persons not in the labor force by desire and availability for work, age, and sex ")
+
+		d3.select(".footnote").style("text-align", "left");
 
 }

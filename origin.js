@@ -1,7 +1,7 @@
 /* global d3 */
 var width=$(window).width();
 console.log(width);
-var height=600;
+var height=400;
 
 var total_unauthorized_pop = {
 	"mexico":1254083,
@@ -73,7 +73,7 @@ var color = d3.scaleThreshold()
 
 var key_base = width/1.45;
 var key_scale = d3.scalePow()
-    .exponent(0.5)
+		.exponent(0.5)
 	.domain([0, 100])
 	.rangeRound([key_base, key_base*1.25]);
 
@@ -137,7 +137,7 @@ function draw_origin() {
 	d3.select(".timeline").append("div")
 		.attr("id", "visuals")
 		.attr("width", "100%")
-		.attr("height", "60%")
+		.attr("height", height)
 		.transition().duration(200);
 
 	function clear_america() {
@@ -230,7 +230,7 @@ function draw_origin() {
 							word,
 							line = [],
 							lineNumber = 0,
-							lineHeight = 1.1, 
+							lineHeight = 1.1,
 							y = text.attr("y"),
 							dy = parseFloat(text.attr("dy")),
 							tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
@@ -358,9 +358,9 @@ function draw_origin() {
 
 	var main_tooltip = d3.select("#visuals").append("div")
 		.attr("class", "main_tooltip")
-        .style("position", "absolute")
-        .style("top", "50%")
-        .style("left", "37.5%");
+				.style("position", "absolute")
+				.style("top", "50%")
+				.style("left", "37.5%");
 
 	var row_title = main_tooltip.append("div")
 		.attr("class", "row")
@@ -425,15 +425,15 @@ function draw_origin() {
 	key.selectAll("rect")
 		.data(color.range().map(function(d) {
 			d = color.invertExtent(d);
-            if (d[0] == null) d[0] = key_scale.domain()[0];
-            if (d[1] == null) d[1] = key_scale.domain()[1];
+						if (d[0] == null) d[0] = key_scale.domain()[0];
+						if (d[1] == null) d[1] = key_scale.domain()[1];
 			return d;
 		}))
 		.enter().append("rect")
 			.attr("height", 12)
 			.attr("x", function(d) { return key_scale(d[0]); })
 			.attr("width", function(d) {
-                            console.log(key_scale(d[1])-key_scale(d[0]));
+														console.log(key_scale(d[1])-key_scale(d[0]));
 							return key_scale(d[1])-key_scale(d[0]);
 						})
 			.attr("fill", function(d, i) { return color(d[0]); });
