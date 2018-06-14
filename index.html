@@ -46,6 +46,10 @@
 			.legend	{
 				text-transform: uppercase;
 			}
+			.state-labels{
+				fill: white;
+				pointer-events: none;
+			}
 </style>
 	</head>
 
@@ -58,15 +62,15 @@
 
 		<div class="section row center timeline" style="margin-top: -30px;">
 			<div class="col s4">
-				<p id="Origin_Label" class="label label_selected">Where we come from</p>
+				<p id="Origin_Label" class="labels label_selected">Where we come from</p>
 				<a id="Origin_Btn" class="btn-floating waves-effect waves-light blue"></a>
 			</div>
 			<div class="col s4">
-				<p id="Integration_Label" class="label">What we do</p>
+				<p id="Integration_Label" class="labels">What we do</p>
 				<a id="Integration_Btn" class="btn-floating waves-effect waves-light grey"></a>
 			</div>
 			<div id="GDP" class="col s4">
-				<p id="GDP_Label" class="label">How we contribute</p>
+				<p id="GDP_Label" class="labels">How we contribute</p>
 				<a id="GDP_Btn" class="btn-floating waves-effect waves-light grey"></a>
 			</div>
 		</div>

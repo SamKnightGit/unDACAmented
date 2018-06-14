@@ -166,7 +166,6 @@ function draw_gdp() {
 	.title("GDP Gain in millions annually")
 	.titleWidth(400);
 
-
 	svg_canvas.select(".gdp_legend").call(legend_loss);
 
 	// Define path generator
@@ -185,6 +184,10 @@ function draw_gdp() {
 				var gdp_gain = parseInt(data[i]["GDP Gain Education"])
 
 				var daca_pop = parseInt(data[i]["DACA Population"])
+				var code = data[i].code;
+				console.log("data[i]", data[i]);
+				console.log("code", data[i].code);
+
 
 				total_loss += parseInt(data[i]["GDP Loss"]);
 				if(data[i]["GDP Gain Education"]) {
@@ -200,6 +203,7 @@ function draw_gdp() {
 						json.features[j].properties.gdp_loss = gdp_loss;
 						json.features[j].properties.gdp_gain = gdp_gain;
 						json.features[j].properties.daca_pop = daca_pop;
+						json.features[j].properties.code = code;
 						//Stop looking through the JSON
 						break;
 					} // END IF
@@ -314,6 +318,91 @@ function draw_gdp() {
 												 .style('opacity', 0);
 								 });
 
+				// ADD LABELS FOR EACH STATE
+
+				us_map.selectAll("text")
+					.data(json.features)
+					.enter()
+					.append("text")
+					.attr("class", "state-labels")
+					.text(function(d) {
+						if (d.properties.code == "RI" || d.properties.code == "DE"){
+							return "";
+						}
+						return d.properties.code;
+					})
+					.attr("x", function(d) {
+						return path.centroid(d)[0];
+					})
+					.attr("y", function(d) {
+						return path.centroid(d)[1];
+					})
+					.attr("dy", function(d) {
+						function dy(n) {
+							return (n * projection.translate()[1]) / height;
+						}
+
+						switch (d.properties.code)
+						{   case "FL":
+										return dy(30)
+								case "LA":
+										return dy(-10)
+								case "NH":
+										return dy(20)
+								case "MA":
+										return dy(1)
+								case "DE":
+										return dy(5)
+								case "MD":
+										return dy(-4)
+								case "RI":
+										return dy(4)
+								case "CT":
+										return dy(2)
+								case "NJ":
+										return dy(20)
+								case "DC":
+										return dy(-3)
+								default:
+										return 0
+						}
+					})
+					.attr("dx", function(d){
+							// edge cases due to centroid calculation issue
+							// see: https://github.com/mbostock/d3/pull/1011
+							// deviations adjusted to test case at map height = 166px
+							function dx(n) {
+									return (n * projection.translate()[0]) / width
+							}
+
+							switch (d.properties.code)
+							{
+									case "FL":
+											return dx(30)
+									case "LA":
+											return dx(-10)
+									case "NH":
+											return dx(3)
+									case "MA":
+											return dx(1)
+									case "DE":
+											return dx(5)
+									case "MD":
+											return dx(-8)
+									case "RI":
+											return dx(4)
+									case "CT":
+											return dx(2)
+									case "NJ":
+											return dx(2)
+									case "DC":
+											return dx(-3)
+									default:
+											return 0
+							}
+					})
+				 .attr("text-anchor","middle")
+				 .attr('font-size','6pt');
 				// Defining Button Interactivity
 
 				d3.select(".toggleBtnGain")
@@ -362,8 +451,14 @@ function draw_gdp() {
 		}) // END D3.JSON
 	}) // END D3.CSV
 
+	$('.label').each( function(){
+		var string = $(this).text();
+		string = string.replace(/G/,"B");
+		string = string.replace(/G/,"B");
+		$(this).html(string);
 
-
+	 }
+);
 	// Placeholder for visuals
 	var title = svg_canvas.append("text")
 		 .attr("class", "canvas_title")
