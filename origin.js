@@ -24,8 +24,8 @@ var unauthorized_percentage = {
 };
 
 function get_top_3(pop_object) {
-		var data = [];
-		var total = get_total_pop(pop_object);
+    var data = [];
+    var total = get_total_pop(pop_object);
 	var pop_array = Object.values(pop_object);
 	pop_array.sort(function (x,y) {
 		return d3.descending(x,y);
@@ -350,7 +350,26 @@ function draw_origin() {
 				});
 
 		var width = parseInt(svg_canvas.style("width").replace("px", ""));
-
+    
+    
+    var potential_text = d3.select("#visuals").append("div")
+      .attr("class","row");
+  
+    var text_div = potential_text.append("div")
+      .attr("class", "col s7 offset-s3")
+      .style("text-align", "left");
+    
+    text_div.append("p")
+      .text("* Potential beneficiaries are split into three distinct categories -- as defined by the Immigration Policy Center:");
+  
+    text_div.append("p")
+      .text("Immediately Elligible -- Between ages 15 and 30 in high school or having already achieved a high school diploma.");
+    text_div.append("p")
+      .text("Elligible in Future -- Between ages 5 and 14.")
+    text_div.append("p")
+      .text("Possibly Elligible -- Between ages 15 and 30 who are not in high school and don't have high school diplomas. This group will only be elligible if they get a GED.");
+  
+     
 	var world_svg = svg_canvas.append("svg")
 		.attr("id", "world")
 		.attr("width", "100%")
@@ -416,7 +435,7 @@ function draw_origin() {
 		.attr("text-anchor", "middle")
 		.attr("font-size", "20px")
 		.attr("font-weight", "bold")
-		.text("Potential DACA Beneficiaries by Region of Birth, 2012");
+		.text("Potential* DACA Beneficiaries by Region of Birth, 2012");
 
 	var key = world_svg.append("g")
 			.attr("class", "key")
