@@ -1,4 +1,4 @@
-var width=1200;
+var width=$(window).width();
 var height=600;
 function draw_gdp() {
 	d3.select("#visuals").remove();
@@ -8,7 +8,7 @@ function draw_gdp() {
 		.transition().duration(200);
 
 	var svg_canvas = d3.select("#visuals").append("svg")
-		.attr("width", width)
+		.attr("width", "100%")
 		.attr("height", height - 100)
 		.attr("class", "gdp_canvas")
 		.attr("border", "1px sold red;");
@@ -22,15 +22,15 @@ function draw_gdp() {
 			.attr("class", "toggleBtnGain btn")
 			.style("background", "#52a26b")
             .style("position", "absolute")
-            .style("top", "95%")
-            .style("left", "42%")
+            .style("top", "90%")
+            .style("left", "43%")
 			.style("margin", "10px")
 			.style("width", "13%")
 			.text("Naturalized DACA");
 
 	//Define map projection
 	var projection = d3.geoAlbersUsa()
-	.translate([width/2-50, height / 3])
+	.translate([width/2.2, height / 3])
 	.scale([800]);
 
 	// color scale using user defined domain
@@ -182,7 +182,7 @@ function draw_gdp() {
 							 "<br>State: " + d.properties.name +
 							 "<br>GDP Loss: " + d.properties.gdp_loss +
 							 "<br>Daca Population: " + d.properties.daca_pop
-						 ).style("transform", "translate(960px, -200px)")
+						 ).style("transform", "translate(" + width/2 + ", -200px)")
 					 })
 					 .on('mouseout', function() {
 						 d3.select(this).style("fill-opacity", 1);
@@ -245,7 +245,7 @@ function draw_gdp() {
 	// Placeholder for visuals
 	var title = svg_canvas.append("text")
 	 .attr("class", "canvas_title")
-		.attr("x", (width - 100) /2)
+		.attr("x", "50%")
 		.attr("y", 50)
 		.attr("fill", "#000")
 		.attr("text-anchor", "middle")

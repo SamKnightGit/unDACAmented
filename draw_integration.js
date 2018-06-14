@@ -323,7 +323,7 @@ function draw_integration() {
 
 		d3.select("#visuals").append("div")
 		.attr("id", "bar_svg")
-		.attr("class", "col s9").node().focus();
+		.attr("class", "col s9");
 
 
 		draw_pie_chart();

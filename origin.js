@@ -1,4 +1,6 @@
 /* global d3 */
+var width=$(window).width();
+console.log(width);
 var height=600;
 
 var total_unauthorized_pop = {
@@ -63,14 +65,20 @@ var region_scale = d3.scaleBand()
       .rangeRound([55, 285])
       .paddingInner(0.2);
 
+var greens = d3.schemeGreens[5];
+
 var color = d3.scaleQuantile()
 	.domain([0, 5, 10, 25, 50, 100])
-	.range(d3.schemeGreens[5]);
+	.range(greens);
 
+
+
+var start = width*0.7475;
+var end = width*0.8425;
 var key_scale = d3.scalePow()
-    .exponent(0.535)
+    .exponent(0.55)
 	.domain([20, 100, 200, 500, 1000])
-	.rangeRound([1305, 1465]);
+	.rangeRound([start, end]);
 
 function build_pop(state_pop) {
 	for (var property in state_pop) {
@@ -267,7 +275,6 @@ function draw_origin() {
         .enter()
         .append("text")
         .attr("x", function(d) {
-          console.log(d);
           return region_scale(d.key) + region_scale.bandwidth()/2;
         })
         .attr("y", function(d) {
@@ -424,7 +431,8 @@ function draw_origin() {
 		.enter().append("rect")
 			.attr("height", 12)
 			.attr("x", function(d, i) { 
-              var base = 1220;
+              //1220
+              var base = width*0.72;
               switch(i) {
                   case 0:
                     return base; 
