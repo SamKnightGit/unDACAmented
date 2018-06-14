@@ -10,8 +10,7 @@ function draw_gdp() {
 	var svg_canvas = d3.select("#visuals").append("svg")
 		.attr("width", "100%")
 		.attr("height", height - 100)
-		.attr("class", "gdp_canvas")
-		.attr("border", "1px sold red;");
+		.attr("class", "gdp_canvas");
 
 	var tooltip = d3.select("#visuals").append("div")
 			.attr("class", "tooltip")
@@ -21,11 +20,11 @@ function draw_gdp() {
 	var naturalized_daca_btn = d3.select("#visuals").append("button")
 			.attr("class", "toggleBtnGain btn")
 			.style("background", "#52a26b")
-						.style("position", "absolute")
-						.style("bottom", "-5%")
-						.style("right", "14.25%")
+		    .style("position", "absolute")
+		    .style("top", height/1.2)
+            .style("left", width/1.4)
 			.style("margin", "10px")
-			.style("width", "13%")
+			.style("width", "15%")
 			.text("Naturalized DACA")
 			// .attr("transform", "translate(" + width / 2+ ", 800)");
 
@@ -35,9 +34,9 @@ function draw_gdp() {
 	.scale([width/2]);
 
 	// color scale using user defined domain
-	var gdp_loss_color = d3.scaleQuantile()
+	var gdp_current_color = d3.scaleQuantile()
 		.domain([1000000, 100000000, 500000000, 1000000000, 5000000000, 14000000000])
-		.range(["#fcbba1","#fc9272","#fb6a4a","#de2d26","#a50f15"]);
+		.range(d3.schemeBlues[7].slice(2,8));
 
 	var gdp_gain_color = d3.scaleQuantile()
 		.domain([1000000, 100000000, 500000000, 1000000000, 5000000000, 14000000000])
@@ -53,7 +52,7 @@ function draw_gdp() {
 
 	var gdp_loss_legend = d3.scaleQuantile()
 		.domain([1000000, 100000000, 500000000, 1000000000, 5000000000, 14000000000])
-		.range(["#fcbba1","#fc9272","#fb6a4a","#de2d26","#a50f15"]);
+		.range(d3.schemeBlues[7].slice(2,8));
 
 	var gdp_gain_legend = d3.scaleQuantile()
 		.domain([1000000, 100000000, 500000000, 1000000000, 5000000000, 14000000000])
@@ -66,8 +65,9 @@ function draw_gdp() {
 	// .style("border-bottom", "1px solid black !important")
 	.labelFormat(d3.format(".2s"))
 	.scale(gdp_loss_legend)
-	.title("GDP Loss in millions annually")
+	.title("GDP contribution in dollars annually")
 	.titleWidth(400);
+  
 
 	var legend_gain = d3.legendColor()
 	// .shapeWidth(25)
@@ -128,12 +128,12 @@ function draw_gdp() {
 
 			var circle = svg_canvas.append("g");
 			circle.append("circle")
-						.attr("cx", width / 9)
+						.attr("cx", width / 10)
 						.attr("cy", height/5)
 			.attr("r", 75)
 			.attr("id", "total")
 			.attr("class", "total_dollars")
-			.style("fill", "#b74046");
+			.style("fill", "#426BA8");
 
 			// var rectangle = svg_canvas.append("g");
 			// rectangle.append("rectangle")
@@ -143,13 +143,22 @@ function draw_gdp() {
 
 			circle.append("text")
 			// .style("stroke", "white")
-			.style("font-weight", "bolder")
-			.attr("class", "total_dollars_text")
-						.attr("position", "relative")
-						.attr("text-anchor", "middle")
-			.style("transform", "translate(" + width/9 + "px," + height/5 + "px)")
-			.style("fill", "white")
-			.text("$" + loss + " Loss");
+              .style("font-weight", "bolder")
+              .attr("class", "total_dollars_text")
+              .attr("position", "relative")
+              .attr("text-anchor", "middle")
+              .style("transform", "translate(" + width/10 + "px," + height/5 + "px)")
+              .style("fill", "white")
+              .text("$" + loss);
+          
+            circle.append("text")
+              .style("font-weight", "bolder")
+              .attr("class", "total_dollars_text")
+              .attr("position", "relative")
+              .attr("text-anchor", "middle")
+              .style("transform", "translate(" + width/10 + "px," + ((height/5) + 20) + "px)")
+              .style("fill", "white")
+              .text("Contributed");
 
 			d3.select(".total_dollars").append("i").attr("class", "fas fa-angle-double-down")
 			.style("transform", "translate(160px, 150px)")
@@ -175,7 +184,7 @@ function draw_gdp() {
 							//Get data value
 							var value = d.properties.gdp_loss;
 							if (value) {
-									return gdp_loss_color(value);
+									return gdp_current_color(value);
 							} else {
 									//If value is undefined…
 									return "#fff";
@@ -204,51 +213,73 @@ function draw_gdp() {
                  });
 
 				// Defining Button Interactivity
-				// var togData = false;
-				d3.select(".toggleBtnLoss")
-					.on("click", function(){
-						// Determine if current line is visible
-						// togData=!togData;
-						//console.log(togData);
-						// if (togData == true){
-							svg_canvas.selectAll("path")
-								.transition().duration(1000)
-								.style("fill", function(d) {
-									var value = d.properties.gdp_loss;
-									if (value) {
-										return gdp_loss_color(value);
-									} else {
-										return "#ccc";
-									}
-								});
-								svg_canvas.select(".gdp_legend").call(legend_loss);
-								d3.select(".total_dollars").transition().duration(1000).style("fill", "#b74046");
-								d3.select(".total_dollars_text").transition().duration(1000).text("$" + loss);
-						});
 				d3.select(".toggleBtnGain")
 					.on("click", function(){
-						// Determine if current line is visible
-						// togData=!togData;
-						//console.log(togData);
-						// if (togData == true){
-							svg_canvas.selectAll("path")
-								.transition().duration(1000)
-								.style("fill", function(d) {
-									var value = d.properties.gdp_gain;
-									if (value) {
-										return gdp_gain_color(value);
-									} else {
-										return "#ccc";
-									}
-								});
-								svg_canvas.select(".gdp_legend").call(legend_gain).transition().duration(1000);
-								// console.log("total_gain", gain);
-								d3.select(".total_dollars").transition().duration(1000).style("fill", "#52a26b");
-								d3.select(".total_dollars_text").transition().duration(1000).text("$" + gain + " gain");
-							// } else {
+                        if (d3.select(this).classed("toggleBtnContribution")) {
+                          svg_canvas.selectAll("path")
+                              .transition().duration(1000)
+                              .style("fill", function(d) {
+                                  var value = d.properties.gdp_loss;
+                                  if (value) {
+                                      return gdp_current_color(value);
+                                  } else {
+                                      return "#ccc";
+                                  }
+                              });
+                          svg_canvas.select(".gdp_legend")
+                              .call(legend_loss);
 
-							// }
-						});
+                          d3.select(".total_dollars")
+                              .transition()
+                              .duration(1000)
+                              .style("fill", "#426BA8");
+
+                          d3.select(".total_dollars_text")
+                              .transition()
+                              .duration(1000)
+                              .text("$" + loss);
+
+                          d3.select(this)
+                            .style("background", "#52a26b")
+                            .text("Naturalized DACA")
+                            .classed("toggleBtnContribution", false);      
+                        }
+                        else {
+                          // Determine if current line is visible
+                          // togData=!togData;
+                          //console.log(togData);
+                          // if (togData == true){
+                          svg_canvas.selectAll("path")
+                              .transition().duration(1000)
+                              .style("fill", function(d) {
+                                  var value = d.properties.gdp_gain;
+                                  if (value) {
+                                      return gdp_gain_color(value);
+                                  } else {
+                                      return "#ccc";
+                                  }
+                              });
+                          svg_canvas.select(".gdp_legend")
+                            .call(legend_gain)
+                            .transition()
+                            .duration(1000);
+                              // console.log("total_gain", gain);
+                          d3.select(".total_dollars")
+                            .transition()
+                            .duration(1000)
+                            .style("fill", "#52a26b");
+                          d3.select(".total_dollars_text")
+                            .transition()
+                            .duration(1000)
+                            .text("$" + gain + " gain");
+
+                          d3.select(this)
+                            .style("background", "#426BA8")
+                            .text("Current DACA")
+                            .classed("toggleBtnContribution", true);
+                        }
+						
+				    });
 		}) // END D3.JSON
 	}) // END D3.CSV
 
