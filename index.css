@@ -36,18 +36,18 @@ div.world_tooltip {
 }
 
 div.potential_text {
-  position: absolute;
-  top: 100%;
-  left: 20%;
+	position: absolute;
+	top: 100%;
+	left: 20%;
 }
 
 ul.footnote_list {
-  list-style-type:circle !important;
+	list-style-type:circle !important;
 }
 
 div.main_tooltip {
 	width: 25%;
-	height: 30%;
+	height: 37.5%;
 	padding: 10px;
 	border: solid 1px black;
 }
@@ -103,17 +103,15 @@ p.main_p {
 	width: 120;
 }
 
-.no_domain .domain{ 
-  display: none;
+.no_domain .domain{
+	display: none;
 }
 
 svg.pop_bar {
-  position: relative;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 90%;
-  
+	position: relative;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 90%;
+
 }
-
-

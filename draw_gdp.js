@@ -1,7 +1,7 @@
-var width=$(window).width();
-console.log("width", width);
-var height=600;
 function draw_gdp() {
+	var width=$(window).width();
+	console.log("width in gdp", width);
+	var height=700;
 	var togData = false;
 	d3.select("#visuals").remove();
 	d3.select("svg").remove();
@@ -17,7 +17,7 @@ function draw_gdp() {
 
 	var tooltip = d3.select("#visuals").append("div")
 			.attr("class", "tooltip card")
-			.style("width", width/7.5)
+			.style("width", width/5)
 			.style("border", "1px solid black")
 			.style("opacity", 0)
 			.style("position", "absolute")
@@ -25,71 +25,71 @@ function draw_gdp() {
 			.style("left", "4%")
 			.style("margin", "10px")
 			.style("padding", "10px")
-            .style("padding-top", "0px")
-            .style("padding-bottom", "0px");
+						.style("padding-top", "0px")
+						.style("padding-bottom", "0px");
 
 	tooltip.append("p").attr("class", "state_name")
 		.style("font-weight", "bolder")
-        .style("margin-bottom", "2px");
-        
-    var tt_gdp_row = tooltip.append("div")
-      .attr("class", "row")
-      .style("margin-bottom", "0px");
-  
-    var tt_gdp_label = tt_gdp_row.append("div")
-      .attr("class", "col s7")
-      .style("padding-right", "0px")
-        .append("p")
-      .text("GDP Contributed")
-      .style("text-align", "left");
-  
-    tt_gdp_row.append("div")
-      .attr("class", "col s1")
-      .append("p").text(":");
-  
+				.style("margin-bottom", "2px");
+
+		var tt_gdp_row = tooltip.append("div")
+			.attr("class", "row")
+			.style("margin-bottom", "0px");
+
+		var tt_gdp_label = tt_gdp_row.append("div")
+			.attr("class", "col s7")
+			.style("padding-right", "0px")
+				.append("p")
+			.text("GDP Contributed")
+			.style("text-align", "left");
+
+		tt_gdp_row.append("div")
+			.attr("class", "col s1")
+			.append("p").text(":");
+
 	tt_gdp_row.append("div")
-      .attr("class", "col s3")
-      .style("padding-left", "0px")
-      .style("padding-right", "0px")
-        .append("p")
-      .attr("class", "money_loss")
-      .style("text-align", "right")
-      .style("margin-right", "2px");
-  
+			.attr("class", "col s3")
+			.style("padding-left", "0px")
+			.style("padding-right", "0px")
+				.append("p")
+			.attr("class", "money_loss")
+			.style("text-align", "right")
+			.style("margin-right", "2px");
+
 	tt_gdp_row.append("div")
-      .attr("class", "col s3")
-      .style("padding-left", "0px")
-      .style("padding-right", "0px")
-        .append("p")
-      .attr("class", "money_gain")
-      .style("text-align", "right")
-      .style("margin-right", "2px");
-    
-    
-    var tt_pop_row = tooltip.append("div")
-      .attr("class", "row")
-      .style("margin-top", "0px")
-      .style("margin-bottom", "10px");
-  
-    var tt_pop_label = tt_pop_row.append("div")
-      .attr("class", "col s7")
-      .style("padding-right", "0px")
-        .append("p")
-      .text("DACA Population")
-      .style("text-align", "left");
-  
-    tt_pop_row.append("div")
-      .attr("class", "col s1")
-      .append("p").text(":");
-  
+			.attr("class", "col s3")
+			.style("padding-left", "0px")
+			.style("padding-right", "0px")
+				.append("p")
+			.attr("class", "money_gain")
+			.style("text-align", "right")
+			.style("margin-right", "2px");
+
+
+		var tt_pop_row = tooltip.append("div")
+			.attr("class", "row")
+			.style("margin-top", "0px")
+			.style("margin-bottom", "10px");
+
+		var tt_pop_label = tt_pop_row.append("div")
+			.attr("class", "col s7")
+			.style("padding-right", "0px")
+				.append("p")
+			.text("DACA Population")
+			.style("text-align", "left");
+
+		tt_pop_row.append("div")
+			.attr("class", "col s1")
+			.append("p").text(":");
+
 	tt_pop_row.append("div")
-      .attr("class", "col s3")
-      .style("padding-left", "0px")
-      .style("padding-right", "0px")
-        .append("p")
-      .attr("class", "population")
-      .style("text-align", "right")
-      .style("margin-right", "2px");
+			.attr("class", "col s3")
+			.style("padding-left", "0px")
+			.style("padding-right", "0px")
+				.append("p")
+			.attr("class", "population")
+			.style("text-align", "right")
+			.style("margin-right", "2px");
 
 	var checkTog = function() {
 		console.log("checking togg");
@@ -104,7 +104,6 @@ function draw_gdp() {
 		}
 	}
 
-
 	var naturalized_daca_btn = d3.select("#visuals").append("button")
 			.attr("class", "toggleBtnGain btn")
 			.style("background", "#3e86bd")
@@ -118,8 +117,8 @@ function draw_gdp() {
 
 	//Define map projection
 	var projection = d3.geoAlbersUsa()
-	.translate([width / 3, height / 3])
-	.scale([width/2]);
+	.translate([width / 2, (height / 2) - 100])
+	.scale([width / 1.5]);
 
 	// color scale using user defined domain
 	var gdp_current_color = d3.scaleQuantile()
@@ -133,7 +132,7 @@ function draw_gdp() {
 
 	svg_canvas.append("g")
 	.attr("class", "gdp_legend")
-	.attr("transform", "translate(" + width / 1.9 + ", " + height/4 + ")");
+	.attr("transform", "translate(" + (width - (width / 4))  + ", " + height/4 + ")");
 
 	var us_map = svg_canvas.append("g")
 	.attr("class", "us_map")
@@ -217,7 +216,7 @@ function draw_gdp() {
 
 			var circle = svg_canvas.append("g");
 			circle.append("circle")
-						.attr("cx", width / 10.5)
+						.attr("cx", width / 8)
 						.attr("cy", height/5)
 			.attr("r", 75)
 			.attr("id", "total")
@@ -236,7 +235,7 @@ function draw_gdp() {
 							.attr("class", "total_dollars_text")
 							.attr("position", "relative")
 							.attr("text-anchor", "middle")
-							.style("transform", "translate(" + width/10.5 + "px," + height/5 + "px)")
+							.style("transform", "translate(" + width/8 + "px," + height/5 + "px)")
 							.style("fill", "white")
 							.text("$" + loss);
 
@@ -245,7 +244,7 @@ function draw_gdp() {
 							.attr("class", "total_dollars_text_curr")
 							.attr("position", "relative")
 							.attr("text-anchor", "middle")
-							.style("transform", "translate(" + width/10.5 + "px," + ((height/5) + 20) + "px)")
+							.style("transform", "translate(" + width/8 + "px," + ((height/5) + 20) + "px)")
 							.style("fill", "white")
 							.text("Contributed");
 
@@ -285,15 +284,15 @@ function draw_gdp() {
 							 .duration(200)
 							 .style('opacity', .9);
 						d3.select(".money_loss").text("$" + d3.format(".2s")(parseInt(d.properties.gdp_loss)).replace(/G/,"B"));
-						d3.select(".money_gain").text(function() { 
-                          if(parseInt(d.properties.gdp_gain)) {
-                            return "$" + d3.format(".2s")(parseInt(d.properties.gdp_gain)).replace(/G/,"B");
-                          }
-                          else {
-                            return "No Data"
-                          }
-                        });
-                          
+						d3.select(".money_gain").text(function() {
+													if(parseInt(d.properties.gdp_gain)) {
+														return "$" + d3.format(".2s")(parseInt(d.properties.gdp_gain)).replace(/G/,"B");
+													}
+													else {
+														return "No Data"
+													}
+												});
+
 						d3.select(".state_name").text(d.properties.name);
 						d3.select(".population").text(d3.format(".2s")(parseInt(d.properties.daca_pop)).replace(/G/,"B"));
 						checkTog();
@@ -339,6 +338,7 @@ function draw_gdp() {
 								d3.select(".total_dollars_text").transition().duration(1000).text("$" + loss);
 								d3.select(".total_dollars_text_curr").text("Contributed");
 								d3.select(this).style("background", "#3e86bd").text("Naturalized Daca")
+								title.text("DACA Workers' GDP Contribution, 2017");
 							} else {
 								svg_canvas.selectAll("path")
 									.transition().duration(1000)
@@ -354,8 +354,9 @@ function draw_gdp() {
 									checkTog();
 									d3.select(".total_dollars").transition().duration(1000).style("fill", "#3e86bd");
 									d3.select(".total_dollars_text").transition().duration(1000).text("$" + gain);
-									d3.select(".total_dollars_text_curr").text("Gained");
-									d3.select(this).style("background", "#52a26b").text("Current DACA"); 
+									d3.select(".total_dollars_text_curr").text("Gained *");
+									d3.select(this).style("background", "#52a26b").text("Current DACA");
+									title.text("Economic Benefits of Naturalizing DACA Recipients 2017");
 							}
 						});
 		}) // END D3.JSON
@@ -365,7 +366,7 @@ function draw_gdp() {
 
 	// Placeholder for visuals
 	var title = svg_canvas.append("text")
-	 .attr("class", "canvas_title")
+		 .attr("class", "canvas_title")
 		.attr("x", "50%")
 		.attr("y", 50)
 		.attr("fill", "#000")
@@ -373,6 +374,16 @@ function draw_gdp() {
 		.attr("font-size", "20px")
 		.attr("font-weight", "bold")
 	 .text("DACA Workers' GDP Contribution, 2017")
+
+	var footnote = d3.select("#visuals").append("p")
+	.attr("class", "footnote")
+	// .attr("x", "50%")
+	// .attr("y", height - 100)
+	.style("fill", "#000")
+	// .attr("text-anchor", "middle")
+	// .attr("font-size", "20px")
+	// .attr("font-weight", "bold")
+	 .text("* In this projection, the Center for American Progress is estimating a scenario in which we assume that half of those eligible for the Dream Act obtain LPR status through the educational pathway by gaining either an associate’s degree or two years toward a bachelor’s degree. With a greater number of workers now having higher levels of education, their total productivity—and their economic contributions—increase.*")
 
 
 }

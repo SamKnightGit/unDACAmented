@@ -1,7 +1,5 @@
-/* global d3 */
 var width=$(window).width();
 console.log(width);
-var height=400;
 
 var total_unauthorized_pop = {
 	"mexico":1254083,
@@ -24,8 +22,8 @@ var unauthorized_percentage = {
 };
 
 function get_top_3(pop_object) {
-    var data = [];
-    var total = get_total_pop(pop_object);
+		var data = [];
+		var total = get_total_pop(pop_object);
 	var pop_array = Object.values(pop_object);
 	pop_array.sort(function (x,y) {
 		return d3.descending(x,y);
@@ -131,11 +129,14 @@ function pretty_country_name(country_name) {
 var selected_state = null;
 
 function draw_origin() {
+	/* global d3 */
+	var height=600;
 
 	d3.select("#visuals").remove();
 	d3.select("svg").remove();
 	d3.select(".timeline").append("div")
 		.attr("id", "visuals")
+		// .attr("class", "card")
 		.attr("width", "100%")
 		.attr("height", height)
 		.transition().duration(200);
@@ -327,6 +328,7 @@ function draw_origin() {
 
 	var svg_canvas = d3.select("#visuals").append("svg")
 		.attr("width", "100%")
+		.attr("class", "card")
 		.attr("height", height);
 
 		var whole_usa_btn = d3.select("#visuals").append("button")
@@ -350,26 +352,26 @@ function draw_origin() {
 				});
 
 		var width = parseInt(svg_canvas.style("width").replace("px", ""));
-    
-    
-    var potential_text = d3.select("#visuals").append("div")
-      .attr("class","row");
-  
-    var text_div = potential_text.append("div")
-      .attr("class", "col s7 offset-s3")
-      .style("text-align", "left");
-    
-    text_div.append("p")
-      .text("* Potential beneficiaries are split into three distinct categories -- as defined by the Immigration Policy Center:");
-  
-    text_div.append("p")
-      .text("Immediately Elligible -- Between ages 15 and 30 in high school or having already achieved a high school diploma.");
-    text_div.append("p")
-      .text("Elligible in Future -- Between ages 5 and 14.")
-    text_div.append("p")
-      .text("Possibly Elligible -- Between ages 15 and 30 who are not in high school and don't have high school diplomas. This group will only be elligible if they get a GED.");
-  
-     
+
+
+		var potential_text = d3.select("#visuals").append("div")
+			.attr("class","row");
+
+		var text_div = potential_text.append("div")
+			.attr("class", "col s7 offset-s3")
+			.style("text-align", "left");
+
+		text_div.append("p")
+			.text("* Potential beneficiaries are split into three distinct categories -- as defined by the Immigration Policy Center:");
+
+		text_div.append("p")
+			.text("Immediately Elligible -- Between ages 15 and 30 in high school or having already achieved a high school diploma.");
+		text_div.append("p")
+			.text("Elligible in Future -- Between ages 5 and 14.")
+		text_div.append("p")
+			.text("Possibly Elligible -- Between ages 15 and 30 who are not in high school and don't have high school diplomas. This group will only be elligible if they get a GED.");
+
+
 	var world_svg = svg_canvas.append("svg")
 		.attr("id", "world")
 		.attr("width", "100%")
@@ -378,7 +380,7 @@ function draw_origin() {
 	var main_tooltip = d3.select("#visuals").append("div")
 		.attr("class", "main_tooltip")
 				.style("position", "absolute")
-				.style("top", "50%")
+				.style("top", "60%")
 				.style("left", "37.5%");
 
 	var row_title = main_tooltip.append("div")

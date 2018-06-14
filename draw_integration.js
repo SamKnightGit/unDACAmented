@@ -1,16 +1,11 @@
-/* global d3 */
-var width=1800;
-var height=800;
-
-function draw_employment() {
-
-		function get_every_other(array) {
-			new_array = [];
-			for (i = 1; i < array.length; i += 2) {
-				new_array.push(array[i]);
-			}
-			return new_array;
+function draw_employment(width, height) {
+	function get_every_other(array) {
+		new_array = [];
+		for (i = 1; i < array.length; i += 2) {
+			new_array.push(array[i]);
 		}
+		return new_array;
+	}
 
 	var bar_canvas = d3.select("#bar_svg").append("svg")
 			// .attr("class", "card")
@@ -146,7 +141,7 @@ function draw_employment() {
 }
 
 
-function draw_pie_chart() {
+function draw_pie_chart(width, height) {
 
 	// Employment Rate Data broken down by DACA, DACA Ineligible, and US
 	var daca_data = [
@@ -589,6 +584,9 @@ function draw_pie_chart() {
 
 
 function draw_integration() {
+	/* global d3 */
+		var width=1800;
+		var height=800;
 		d3.select("#visuals").remove();
 		d3.select("svg").remove();
 		d3.select(".timeline").append("div")
@@ -625,8 +623,8 @@ function draw_integration() {
 			.style("font-size", "15px")
 			.style("font-weight", "bolder");
 
-		draw_pie_chart();
-		draw_employment();
+		draw_pie_chart(width, height);
+		draw_employment(width, height);
 
 		d3.select("#visuals").append("p")
 		.attr("class", "footnote")
