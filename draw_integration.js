@@ -253,7 +253,7 @@ function draw_pie_chart() {
 						"end" : "start";
 		})
 		var daca_total = daca_svg.append("text")
-		.text("Total: " + d3.format(".2s")(parseInt(daca_data[0].total)))
+		.text("Total: " + d3.format(".2s")(parseInt(daca_data[0].total)) + "*")
 		.attr("fill", "black")
 		.attr("class", "daca")
 		.attr("text-anchor", "start")
@@ -339,7 +339,7 @@ function draw_pie_chart() {
 							"end" : "start";
 			})
 		var daca_ineligible_total = daca_ineligible_svg.append("text")
-		.text("Total: " + d3.format(".2s")(parseInt(daca_ineligible_data[0].total)))
+		.text("Total: " + d3.format(".2s")(parseInt(daca_ineligible_data[0].total)) + "*")
 		.attr("fill", "black")
 		.attr("text-anchor", "start")
 		.attr("class", "undocumented")
@@ -351,10 +351,10 @@ function draw_pie_chart() {
 		.append('svg')
 		.attr('class', 'pie us_pie')
 		.attr('width', w)
-		.attr('height', h + 100);
+		.attr('height', h + 50);
 
 	var us_total = us_svg.append("text")
-	.text("Total: " + d3.format(".2s")(parseInt(us_data[0].total)))
+	.text("Total: " + d3.format(".2s")(parseInt(us_data[0].total)) + "*")
 	.attr("fill", "black")
 	.attr("class", "US")
 	.attr("text-anchor", "start")
@@ -459,12 +459,16 @@ function draw_integration() {
 		.attr("id", "pie_svg")
 		.attr("class", "col s3");
 
+
 		d3.select("#visuals").append("div")
 		.attr("id", "bar_svg")
 		.attr("class", "col s9");
 
-
 		draw_pie_chart();
 		draw_employment();
+
+		d3.select("#pie_svg").append("p")
+		.attr("class", "footnote")
+		.text("* Total population age 16 and over")
 
 }
