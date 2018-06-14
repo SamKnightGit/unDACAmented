@@ -50,6 +50,27 @@ function draw_employment() {
 			data_scale.domain(keys).rangeRound([0, occupation_scale.bandwidth()]);
 			y.domain([0, d3.max(data, function(d) { return d3.max(keys, function(key) { return d[key]; }); })]).nice();
 
+			var legend = bar_canvas.selectAll(".legend")
+				.data(keys)
+				.enter().append("g")
+				.attr("class", "legend")
+				.attr("transform", function(d, i) { return "translate(110," + (50 +  (i * 25)) + ")"; });
+
+			legend.append("rect")
+					.attr("x", width - 18)
+					.attr("width", 18)
+					.attr("height", 18)
+					.style("fill", function(d) {
+						return z(d);
+					});
+
+			legend.append("text")
+					.attr("x", width - 24)
+					.attr("y", 9)
+					.attr("dy", ".35em")
+					.style("text-anchor", "end")
+					.text(function(d) { return d; });
+
 			g.append("g")
 				.selectAll("g")
 				.data(data)
@@ -93,7 +114,7 @@ function draw_employment() {
 			g.append("g")
 				.attr("class", "no_domain")
 				.call(d3.axisLeft(y).ticks(null, "s"))
-			.append("text")
+				.append("text")
 				.attr("transform", "rotate(-90)")
 				.attr("x", -height/2 + 18)
 				.attr("y", -40)
@@ -106,6 +127,8 @@ function draw_employment() {
 
 
 		})
+
+
 }
 
 function draw_education() {
@@ -115,7 +138,6 @@ function draw_education() {
 function draw_pie_chart() {
 
 	// Employment Rate Data broken down by DACA, DACA Ineligible, and US
-
 	var daca_data = [
 		{total: 682909},
 		{status: "Employed", percent: 55, number: 379390},
@@ -198,6 +220,16 @@ function draw_pie_chart() {
 			d3.selectAll(".daca, .daca_path").attr("fill-opacity", "1");
 			d3.selectAll(".undocumented, .us, .us_path, .daca_ineligible_path").attr("fill-opacity", ".25");
 		})
+
+	daca_path.append("text")
+		.attr("dy", "1.6em")
+		.attr("transform", function(d) {
+			// return "translate(" + daca_arc.centroid(d)[0] + ", " + daca_arc.centroid(d)[1] +  ")";
+			return "translate(" + daca_arc.centroid(d) + ")";
+		})
+		.attr("text-anchor", "middle")
+			.style("fill", "black")
+			.text(function(d) {return d.data.percent});
 
 	// DACA INELIGIBLE PIE ***********************************************************
 	var daca_ineligible_svg = d3.select("#pie_svg")
@@ -296,26 +328,29 @@ function draw_pie_chart() {
 			d3.select(".us_pie").attr("fill-opacity", "1");
 			d3.selectAll(".us, .us_path").attr("fill-opacity", "1");
 			d3.selectAll(".daca, .undocumented, .daca_path, .daca_ineligible_path").attr("fill-opacity", ".25");
-			// d3.select(".daca_pie, .daca_ineligible_pie").attr("fill-opacity", ".25");
-			// d3.select(".daca_ineligible_pie").attr("fill-opacity", ".25");
 		})
+		.append("g").append("text")
+		.attr('transform', 'translate(' + (w / 2) + ',' + (h / 2) + ')')
+		.attr('fill', 'black')
+			.text(function(d) {
+				return d.data.percent;
+			})
 
 }
-
 
 function draw_integration() {
 		d3.select("#visuals").remove();
 		d3.select("svg").remove();
 		d3.select(".timeline").append("div")
-			.attr("id", "visuals");
+			.attr("id", "visuals")
+			.style("padding-top", "75px");
 
-		d3.select("#visuals").append("h3")
+		d3.select("#visuals").append("p")
 		.attr("class", "integration_title")
 		.text("Employment Statistics 2017")
-
-		d3.select("#visuals").append("input")
-		.attr("class", "focus")
-		.attr("type", "hidden");
+		.style("font-size", "20px")
+		.style("font-weight", "bold")
+		.attr("transform", "translate(0, 45)");
 
 		d3.select("#visuals").append("div")
 		.attr("id", "pie_svg")

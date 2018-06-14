@@ -24,8 +24,8 @@ var unauthorized_percentage = {
 };
 
 function get_top_3(pop_object) {
-    var data = [];
-    var total = get_total_pop(pop_object);
+		var data = [];
+		var total = get_total_pop(pop_object);
 	var pop_array = Object.values(pop_object);
 	pop_array.sort(function (x,y) {
 		return d3.descending(x,y);
@@ -35,21 +35,21 @@ function get_top_3(pop_object) {
 		for (var property in pop_object) {
 			if (pop_object.hasOwnProperty(property)) {
 				if (pop_object[property] == pop) {
-                    var percent = pop/total * 100;
+										var percent = pop/total * 100;
 					data[i] = {[pretty_country_name([property])]: [pop, percent]};
 				}
 			}
 		}
 	}
-    var sum = 0;
-    for (var i = 3; i < pop_array.length; i++) {
-      sum += pop_array[i];
-    }
-    var percent = sum/total * 100;
-    data.push({
-      "Other": [sum, percent]
-    });
-    bar_data = data;
+		var sum = 0;
+		for (var i = 3; i < pop_array.length; i++) {
+			sum += pop_array[i];
+		}
+		var percent = sum/total * 100;
+		data.push({
+			"Other": [sum, percent]
+		});
+		bar_data = data;
 }
 
 
@@ -59,11 +59,11 @@ get_top_3(total_unauthorized_pop);
 
 
 var pop_scale = d3.scaleLinear()
-    .rangeRound([150, 10]);
+		.rangeRound([150, 10]);
 
 var region_scale = d3.scaleBand()
-      .rangeRound([55, 285])
-      .paddingInner(0.2);
+			.rangeRound([55, 285])
+			.paddingInner(0.2);
 
 var greens = d3.schemeGreens[5];
 
@@ -139,6 +139,8 @@ function draw_origin() {
 	d3.select("svg").remove();
 	d3.select(".timeline").append("div")
 		.attr("id", "visuals")
+		.attr("width", "100%")
+		.attr("height", "100%")
 		.transition().duration(200);
 
 	function clear_america() {
@@ -183,6 +185,7 @@ function draw_origin() {
 				}
 			});
 	}
+<<<<<<< HEAD
   
     function update_bar_chart() {
       var regions_pop = [];
@@ -312,20 +315,19 @@ function draw_origin() {
           .text("Beneficiaries");
     }
   
-    
-    /*
+		/*
 	function update_main_pop() {
 		country1 = [Object.keys(top_3[0])[0]];
 		country2 = [Object.keys(top_3[1])[0]];
 		country3 = [Object.keys(top_3[2])[0]];
-        country4 = "Other";
+				country4 = "Other";
 
 		pop1 = [Object.values(top_3[0])[0]];
 		pop2 = [Object.values(top_3[1])[0]];
 		pop3 = [Object.values(top_3[2])[0]];
-        pop4 = rest_of_the_world;
+				pop4 = rest_of_the_world;
 	}
-    */
+		*/
 
 	d3.select("svg").remove();
 
@@ -333,29 +335,29 @@ function draw_origin() {
 		.attr("width", "100%")
 		.attr("height", height);
 
-    var whole_usa_btn = d3.select("#visuals").append("button")
-        .attr("class", "btn")
-        .style("background", "#a6bddb")
-        .style("position","absolute")
-        .style("bottom", "7%")
-        .style("left", "18%")
-        .style("margin", "10px")
-        .style("width", "auto")
-        .text("Select Entire U.S.")
-        .on("mousedown", function() {
-          selected_state = null;
-          clear_america();
-          fill_america();
-          redraw_world();
-          get_top_3(total_unauthorized_pop);
-          update_bar_chart();
-          //update_main_pop(top_3);
-          main_title.text( "USA" );
-          d3.select(this).classed("disabled", true);
-        });
-    
-    var width = parseInt(svg_canvas.style("width").replace("px", ""));
-  
+		var whole_usa_btn = d3.select("#visuals").append("button")
+				.attr("class", "btn")
+				.style("background", "#a6bddb")
+				.style("position","absolute")
+				.style("bottom", "7%")
+				.style("left", "18%")
+				.style("margin", "10px")
+				.style("width", "auto")
+				.text("Select Entire U.S.")
+				.on("mousedown", function() {
+					selected_state = null;
+					clear_america();
+					fill_america();
+					redraw_world();
+					get_top_3(total_unauthorized_pop);
+					update_bar_chart();
+					//update_main_pop(top_3);
+					main_title.text( "USA" );
+					d3.select(this).classed("disabled", true);
+				});
+
+		var width = parseInt(svg_canvas.style("width").replace("px", ""));
+
 	var world_svg = svg_canvas.append("svg")
 		.attr("id", "world")
 		.attr("width", "100%")
@@ -372,10 +374,10 @@ function draw_origin() {
 		.attr("class", "main_tt_title col s12")
 		.text("USA");
 
-    var pop_bar = main_tooltip.append("svg")
-      .attr("class", "pop_bar");
+		var pop_bar = main_tooltip.append("svg")
+			.attr("class", "pop_bar");
 
-    update_bar_chart();
+		update_bar_chart();
 	//update_main_pop();
 
 	var world_tooltip = d3.select("#visuals").append("div")
@@ -456,10 +458,10 @@ function draw_origin() {
               
             })
 			.attr("width", function(d) {
-              return 20*(Math.log(d[1]-d[0]));
-            })
+							return 20*(Math.log(d[1]-d[0]));
+						})
 			.attr("fill", function(d, i) { return color(d[0]); });
-  
+
 	key.append("text")
 			.attr("class", "caption")
 			.attr("x", "74%")
@@ -510,26 +512,26 @@ function draw_origin() {
 				.attr("d", us_path)
 				.style("stroke", "grey")
 				.style("fill", function(d) {
-                  if (d.id == "06") {
-                    selected_state = d;
-                    whole_usa_btn.classed("disabled", false);
-		            main_title.text( d.properties.name );
-                    clear_america();
+									if (d.id == "06") {
+										selected_state = d;
+										whole_usa_btn.classed("disabled", false);
+								main_title.text( d.properties.name );
+										clear_america();
 					redraw_world();
-				    get_top_3(unauthorized_pop);
-                    update_bar_chart();
+						get_top_3(unauthorized_pop);
+										update_bar_chart();
 					//update_main_pop(top_3);
-                    return "a6bddb";
-                  }
-                  else {
-                    return "white";
-                  }
-                })
+										return "a6bddb";
+									}
+									else {
+										return "white";
+									}
+								})
 				.on("mouseover", function() {
 					clear_america();
 					d3.select(this)
 						.style("fill", "d2deed")
-                        .style("cursor", "pointer");
+												.style("cursor", "pointer");
 				})
 				.on("mouseout", function(d) {
 					d3.select(this)
@@ -547,12 +549,12 @@ function draw_origin() {
 				.on("mousedown", function(d) {
 					if (!selected_state) {
 						selected_state = d;
-                        whole_usa_btn.classed("disabled", false);
+												whole_usa_btn.classed("disabled", false);
 						main_title.text( d.properties.name );
 					}
 					else {
 						if (d.id == selected_state.id) {
-                            whole_usa_btn.classed("disabled", true);
+														whole_usa_btn.classed("disabled", true);
 							selected_state = null;
 							main_title.text( "USA" );
 						}
@@ -569,7 +571,7 @@ function draw_origin() {
 					else {
 						get_top_3(total_unauthorized_pop);
 					}
-                    update_bar_chart();
+										update_bar_chart();
 					//update_main_pop(top_3);
 				});
 		});

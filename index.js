@@ -35,7 +35,6 @@ $(document).ready(function() {
 			$( '#Integration_Label' ).removeClass('label');
 			$( '#Integration_Label' ).addClass('label_selected');
 			draw_integration();
-			$("#bar_svg").focus();
 		}
 	});
 
