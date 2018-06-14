@@ -22,7 +22,6 @@ function draw_employment() {
 			height = parseInt(bar_canvas.style("height").replace("px", "")) - margin.top - margin.bottom,
 			g = bar_canvas.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-		console.log("occupation width " + width);
 		// Below code from: https://bl.ocks.org/mbostock/3887051
 		var occupation_scale = d3.scaleBand()
 			.rangeRound([0, width])
@@ -42,11 +41,9 @@ function draw_employment() {
 			for (var i = 1, n = columns.length; i < n; ++i) d[columns[i]] = +d[columns[i]];
 			return d;
 		}, function(error, data) {
-			console.log(data);
 			if (error) throw error;
 
 			var keys = get_every_other(data.columns.slice(1));
-			console.log(keys)
 			occupation_scale.domain(data.map(function (d) {return d.Occupation; }));
 			data_scale.domain(keys).rangeRound([0, occupation_scale.bandwidth()]);
 			y.domain([0, d3.max(data, function(d) { return d3.max(keys, function(key) { return d[key]; }); })]).nice();
@@ -70,7 +67,10 @@ function draw_employment() {
 					.attr("y", 9)
 					.attr("dy", ".35em")
 					.style("text-anchor", "end")
-					.text(function(d) { return d; });
+					.text(function(d) {
+                      var split = d.split(" ")[1];
+                      return split + " Workers";
+                    });
 
 			g.append("g")
 				.selectAll("g")
@@ -89,7 +89,6 @@ function draw_employment() {
 						return z(d.key);
 					})
 					.attr("fill-opacity", function(d) {
-						console.log(d.key);
 						if (d.key != " DACA Percent") {
 							return "0.25";
 						}
@@ -117,14 +116,14 @@ function draw_employment() {
 				.call(d3.axisLeft(y).ticks(null, "s"))
 				.append("text")
 				.attr("transform", "rotate(-90)")
-				.attr("x", -height/2 + 18)
+				.attr("x", -height/2)
 				.attr("y", -40)
 				.attr("dy", "0.32em")
 				.attr("fill", "#000")
 				.attr("font-weight", "bold")
 				.attr("text-anchor", "middle")
 				.attr("font-size", "16px")
-				.text("% of Workforce");
+				.text("% of Workforce in Occupation");
 
 
 		})
@@ -132,9 +131,6 @@ function draw_employment() {
 
 }
 
-function draw_education() {
-	console.log("educated!");
-}
 
 function draw_pie_chart() {
 

@@ -32,7 +32,7 @@ function draw_gdp() {
 	//Define map projection
 	var projection = d3.geoAlbersUsa()
 	.translate([width / 3, height / 3])
-	.scale([800]);
+	.scale([width/2]);
 
 	// color scale using user defined domain
 	var gdp_loss_color = d3.scaleQuantile()
@@ -45,7 +45,7 @@ function draw_gdp() {
 
 	svg_canvas.append("g")
 	.attr("class", "gdp_legend")
-	.attr("transform", "translate(" + width / 2+ ", 200)");
+	.attr("transform", "translate(" + width / 1.9 + ", " + height/4 + ")");
 
 	var us_map = svg_canvas.append("g")
 	.attr("class", "us_map")
@@ -191,14 +191,17 @@ function draw_gdp() {
 							 "<br>State: " + d.properties.name +
 							 "<br>GDP Loss: " + d.properties.gdp_loss +
 							 "<br>Daca Population: " + d.properties.daca_pop
-						 ).style("transform", "translate(" + width/2 + ", -200px)")
+						 )
+                          .attr("position", "absolute")
+                          .attr("top", "50%")
+                          .attr("left", "20%");
 					 })
-					 .on('mouseout', function() {
-						 d3.select(this).style("fill-opacity", 1);
-						 tooltip.transition()
-							 .duration(400)
-							 .style('opacity', 0);
-					 })
+                 .on('mouseout', function() {
+                     d3.select(this).style("fill-opacity", 1);
+                     tooltip.transition()
+                         .duration(400)
+                         .style('opacity', 0);
+                 });
 
 				// Defining Button Interactivity
 				// var togData = false;

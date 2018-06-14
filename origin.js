@@ -140,7 +140,7 @@ function draw_origin() {
 	d3.select(".timeline").append("div")
 		.attr("id", "visuals")
 		.attr("width", "100%")
-		.attr("height", "100%")
+		.attr("height", "60%")
 		.transition().duration(200);
 
 	function clear_america() {
@@ -397,13 +397,14 @@ function draw_origin() {
 
 	var us_projection = d3.geoAlbersUsa()
 		.scale(width/2.5)
-		.translate([width/2 - width/4,260]);
+		.translate([width/4,height/3]);
 	var us_path = d3.geoPath()
 		.projection(us_projection);
 
 	var world_projection = d3.geoNaturalEarth1()
 		.scale(width/12)
-		.translate([width/2 + width/4,290]);
+		.translate([(3*width)/4,height/2.8]);
+  
 	var world_path = d3.geoPath()
 			.projection(world_projection);
 
