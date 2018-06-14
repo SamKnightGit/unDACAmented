@@ -193,7 +193,6 @@ function draw_gdp() {
 				if(data[i]["GDP Gain Education"]) {
 					total_gain += parseInt(data[i]["GDP Gain Education"]);
 				}
-
 				console.log("total_gain", total_gain)
 				//Find the corresponding state inside the GeoJSON
 				for (var j = 0; j < json.features.length; j++) {

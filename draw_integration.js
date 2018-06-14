@@ -85,7 +85,7 @@ function draw_employment(width, height) {
 				.selectAll("g")
 				.data(data)
 				.enter().append("g")
-                    .attr("class", "bar_g")
+										.attr("class", "bar_g")
 					.attr("transform", function(d) {return "translate(" + occupation_scale(d.Occupation) + ",0)";})
 				.selectAll("rect")
 				.data(function(d) { return keys.map(function(key) { return {key: key, value: d[key]}; }); })
@@ -103,37 +103,37 @@ function draw_employment(width, height) {
 							return "0.25";
 						}
 					});
-          
-          
-          
-            d3.selectAll(".bar_g")
-              .selectAll("text")
-              .data(function(d) { 
-                console.log(d);
-                return keys.map(function(key) { 
-                  return {key: key, value: d[key]}; 
-                }); 
-              })
-              .enter().append("text") 
-                .attr("class", function(d) {return d.key; })
-                .attr("x", function(d) {return data_scale(d.key) + data_scale.bandwidth() / 2; })
-                .attr("y", function(d) {return y(d.value)-2; })
-                .attr("width", data_scale.bandwidth())
-                .attr("height", function(d) { return height - y(d.value);})
-                .style("text-anchor", "middle")
-                .style("font-size", "10px")
-                .style("font-weight", "normal")
-                .style("opacity", function(d) {
-                  console.log(d.key);
-                  if (d.key == " DACA Percent") {
-                    return 1;
-                  }
-                  else {
-                    return 0.25;
-                  }
-                })
-                .text(function(d) {return  d.value});
-                      
+
+
+
+						d3.selectAll(".bar_g")
+							.selectAll("text")
+							.data(function(d) {
+								console.log(d);
+								return keys.map(function(key) {
+									return {key: key, value: d[key]};
+								});
+							})
+							.enter().append("text")
+								.attr("class", function(d) {return d.key; })
+								.attr("x", function(d) {return data_scale(d.key) + data_scale.bandwidth() / 2; })
+								.attr("y", function(d) {return y(d.value)-2; })
+								.attr("width", data_scale.bandwidth())
+								.attr("height", function(d) { return height - y(d.value);})
+								.style("text-anchor", "middle")
+								.style("font-size", "10px")
+								.style("font-weight", "normal")
+								.style("opacity", function(d) {
+									console.log(d.key);
+									if (d.key == " DACA Percent") {
+										return 1;
+									}
+									else {
+										return 0.25;
+									}
+								})
+								.text(function(d) {return  d.value});
+
 			g.append("g")
 				.attr("class", "no_domain")
 				.attr("transform", "translate(0," + height + ")")
@@ -631,6 +631,11 @@ function draw_integration() {
 		.style("font-size", "20px")
 		.style("font-weight", "bold")
 		.attr("transform", "translate(0, 45)");
+
+		d3.select("#visuals")
+			.append("p")
+			.text("Click on each pie chart to learn more about the occupations of each group.")
+			.style("font-size", "12px");
 
 		d3.select("#visuals").append("div")
 		.attr("id", "pie_svg")
