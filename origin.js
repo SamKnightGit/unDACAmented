@@ -76,7 +76,7 @@ var color = d3.scaleQuantile()
 var start = width*0.7475;
 var end = width*0.8425;
 var key_scale = d3.scalePow()
-    .exponent(0.55)
+		.exponent(0.55)
 	.domain([20, 100, 200, 500, 1000])
 	.rangeRound([start, end]);
 
@@ -185,136 +185,135 @@ function draw_origin() {
 				}
 			});
 	}
-<<<<<<< HEAD
-  
-    function update_bar_chart() {
-      var regions_pop = [];
-      var regions = [];
-      for (var i = 0; i < bar_data.length; i++) {
-        regions.push(Object.keys(bar_data[i])[0]);
-        regions_pop.push(Object.values(bar_data[i])[0][0])
-      }
-      
-      bar_data.forEach(function(d) {
-        d.key = Object.keys(d)[0];
-        d.value = Object.values(d)[0][0];
-        d.percent = Object.values(d)[0][1];
-      });
-      
-      pop_scale.domain([0, d3.max(regions_pop)]);
-      region_scale.domain(regions);
-      
-      
-      pop_bar.selectAll("rect").remove();
-      pop_bar.selectAll("rect")
-        .data(bar_data)
-        .enter()
-        .append("rect")
-        .attr("x", function(d) {
-          return region_scale(d.key);
-        })
-        .attr("y", function(d) {
-          return pop_scale(d.value);
-        })
-        .attr("width", region_scale.bandwidth())
-        .attr("height", function(d) {
-          return 150 - pop_scale(d.value);
-        })
-        .style("fill", function(d) {
-          return color(d.percent);
-        });
-      
-        var xAxis = d3.axisBottom(region_scale);
-        var yAxis = d3.axisLeft(pop_scale);
-      
-      //Source: 
-      //https://bl.ocks.org/mbostock/7555321
-      function wrap(text, width) {
-        text.each(function() {
-          var text = d3.select(this),
-              words = text.text().split(/\s+/).reverse(),
-              word,
-              line = [],
-              lineNumber = 0,
-              lineHeight = 1.1, // ems
-              y = text.attr("y"),
-              dy = parseFloat(text.attr("dy")),
-              tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
-          while (word = words.pop()) {
-            line.push(word);
-            tspan.text(line.join(" "));
-            if (tspan.node().getComputedTextLength() > width) {
-              line.pop();
-              tspan.text(line.join(" "));
-              line = [word];
-              tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
-            }
-          }
-        });
-      }
-      
-      pop_bar.selectAll("g").remove();
-      pop_bar.selectAll("text").remove();
-      pop_bar.append("g")
-        .attr("class", "no_domain")
-        .attr("transform", "translate(0," + 150 + ")")
-        .call(xAxis)
-        .selectAll("text")
-        .call(wrap, region_scale.bandwidth());
-      
-      pop_bar.append("g")
-        .attr("class", "no_domain")
-        .attr("transform", "translate(55,0)")
-        .call(yAxis
-              .ticks(5)
-              .tickFormat(d3.format(".2s")))
-        .selectAll("text")
-        .style("text-anchor", "end")
-        .attr("font-size", "10px");
-        
-      pop_bar.append("g")
-        .selectAll("text")
-        .data(bar_data)
-        .enter()
-        .append("text")
-        .attr("x", function(d) {
-          return region_scale(d.key) + region_scale.bandwidth()/2;
-        })
-        .attr("y", function(d) {
-          return pop_scale(d.value)-1;
-        })
-        .attr("width", region_scale.bandwidth())
-        .attr("height", function(d) {
-          return 150 - pop_scale(d.value);
-        })
-        .attr("text-anchor", "middle")
-        .attr("font-size", "10px")
-        .text(function(d) {  
-          return d3.format("0.2s")(d.value);
-        });
-      
-      pop_bar.append("g")
-        .append("text")
-          .attr("text-anchor", "middle")
-          .attr("x", 153)
-          .attr("y", 207)
-          .attr("font-weight", "bold")
-          .attr("font-size", "12px")
-          .text("Region");
-      
-      pop_bar.append("g")
-        .append("text")
-          .attr("transform", "rotate(-90)")
-          .attr("x", -85)
-          .attr("y", 15)
-          .attr("dy", "0.32em")
-          .attr("fill", "#000")
-          .attr("font-weight", "bold")
-          .attr("text-anchor", "middle")
-          .attr("font-size", "12px")
-          .text("Beneficiaries");
-    }
-  
+
+		function update_bar_chart() {
+			var regions_pop = [];
+			var regions = [];
+			for (var i = 0; i < bar_data.length; i++) {
+				regions.push(Object.keys(bar_data[i])[0]);
+				regions_pop.push(Object.values(bar_data[i])[0][0])
+			}
+
+			bar_data.forEach(function(d) {
+				d.key = Object.keys(d)[0];
+				d.value = Object.values(d)[0][0];
+				d.percent = Object.values(d)[0][1];
+			});
+
+			pop_scale.domain([0, d3.max(regions_pop)]);
+			region_scale.domain(regions);
+
+
+			pop_bar.selectAll("rect").remove();
+			pop_bar.selectAll("rect")
+				.data(bar_data)
+				.enter()
+				.append("rect")
+				.attr("x", function(d) {
+					return region_scale(d.key);
+				})
+				.attr("y", function(d) {
+					return pop_scale(d.value);
+				})
+				.attr("width", region_scale.bandwidth())
+				.attr("height", function(d) {
+					return 150 - pop_scale(d.value);
+				})
+				.style("fill", function(d) {
+					return color(d.percent);
+				});
+
+				var xAxis = d3.axisBottom(region_scale);
+				var yAxis = d3.axisLeft(pop_scale);
+
+			//Source:
+			//https://bl.ocks.org/mbostock/7555321
+			function wrap(text, width) {
+				text.each(function() {
+					var text = d3.select(this),
+							words = text.text().split(/\s+/).reverse(),
+							word,
+							line = [],
+							lineNumber = 0,
+							lineHeight = 1.1, // ems
+							y = text.attr("y"),
+							dy = parseFloat(text.attr("dy")),
+							tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
+					while (word = words.pop()) {
+						line.push(word);
+						tspan.text(line.join(" "));
+						if (tspan.node().getComputedTextLength() > width) {
+							line.pop();
+							tspan.text(line.join(" "));
+							line = [word];
+							tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
+						}
+					}
+				});
+			}
+
+			pop_bar.selectAll("g").remove();
+			pop_bar.selectAll("text").remove();
+			pop_bar.append("g")
+				.attr("class", "no_domain")
+				.attr("transform", "translate(0," + 150 + ")")
+				.call(xAxis)
+				.selectAll("text")
+				.call(wrap, region_scale.bandwidth());
+
+			pop_bar.append("g")
+				.attr("class", "no_domain")
+				.attr("transform", "translate(55,0)")
+				.call(yAxis
+							.ticks(5)
+							.tickFormat(d3.format(".2s")))
+				.selectAll("text")
+				.style("text-anchor", "end")
+				.attr("font-size", "10px");
+
+			pop_bar.append("g")
+				.selectAll("text")
+				.data(bar_data)
+				.enter()
+				.append("text")
+				.attr("x", function(d) {
+					return region_scale(d.key) + region_scale.bandwidth()/2;
+				})
+				.attr("y", function(d) {
+					return pop_scale(d.value)-1;
+				})
+				.attr("width", region_scale.bandwidth())
+				.attr("height", function(d) {
+					return 150 - pop_scale(d.value);
+				})
+				.attr("text-anchor", "middle")
+				.attr("font-size", "10px")
+				.text(function(d) {
+					return d3.format("0.2s")(d.value);
+				});
+
+			pop_bar.append("g")
+				.append("text")
+					.attr("text-anchor", "middle")
+					.attr("x", 153)
+					.attr("y", 207)
+					.attr("font-weight", "bold")
+					.attr("font-size", "12px")
+					.text("Region");
+
+			pop_bar.append("g")
+				.append("text")
+					.attr("transform", "rotate(-90)")
+					.attr("x", -85)
+					.attr("y", 15)
+					.attr("dy", "0.32em")
+					.attr("fill", "#000")
+					.attr("font-weight", "bold")
+					.attr("text-anchor", "middle")
+					.attr("font-size", "12px")
+					.text("Beneficiaries");
+		}
+
 		/*
 	function update_main_pop() {
 		country1 = [Object.keys(top_3[0])[0]];
@@ -432,31 +431,31 @@ function draw_origin() {
 		}))
 		.enter().append("rect")
 			.attr("height", 12)
-			.attr("x", function(d, i) { 
-              //1220
-              var base = width*0.72;
-              switch(i) {
-                  case 0:
-                    return base; 
-                    break;
-                  case 1:
-                    return base+25; 
-                    break;
-                  case 2:
-                    return base+50; 
-                    break;
-                  case 3:
-                    return base+100; 
-                    break;
-                  case 4:
-                    return base+160; 
-                    break;
-                  default:
-                    return base; 
-              }
-                
-              
-            })
+			.attr("x", function(d, i) {
+							//1220
+							var base = width*0.72;
+							switch(i) {
+									case 0:
+										return base;
+										break;
+									case 1:
+										return base+25;
+										break;
+									case 2:
+										return base+50;
+										break;
+									case 3:
+										return base+100;
+										break;
+									case 4:
+										return base+160;
+										break;
+									default:
+										return base;
+							}
+
+
+						})
 			.attr("width", function(d) {
 							return 20*(Math.log(d[1]-d[0]));
 						})
