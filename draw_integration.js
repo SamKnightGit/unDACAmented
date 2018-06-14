@@ -22,7 +22,6 @@ function draw_employment() {
 			height = parseInt(bar_canvas.style("height").replace("px", "")) - margin.top - margin.bottom,
 			g = bar_canvas.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-		// Below code from: https://bl.ocks.org/mbostock/3887051
 		var occupation_scale = d3.scaleBand()
 			.rangeRound([0, width])
 			.paddingInner(0.2);

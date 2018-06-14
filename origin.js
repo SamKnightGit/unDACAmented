@@ -226,8 +226,6 @@ function draw_origin() {
 				var xAxis = d3.axisBottom(region_scale);
 				var yAxis = d3.axisLeft(pop_scale);
 
-			//Source:
-			//https://bl.ocks.org/mbostock/7555321
 			function wrap(text, width) {
 				text.each(function() {
 					var text = d3.select(this),
@@ -235,7 +233,7 @@ function draw_origin() {
 							word,
 							line = [],
 							lineNumber = 0,
-							lineHeight = 1.1, // ems
+							lineHeight = 1.1, 
 							y = text.attr("y"),
 							dy = parseFloat(text.attr("dy")),
 							tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
@@ -350,7 +348,6 @@ function draw_origin() {
 					redraw_world();
 					get_top_3(total_unauthorized_pop);
 					update_bar_chart();
-					//update_main_pop(top_3);
 					main_title.text( "USA" );
 					d3.select(this).classed("disabled", true);
 				});
@@ -377,7 +374,7 @@ function draw_origin() {
 			.attr("class", "pop_bar");
 
 		update_bar_chart();
-	//update_main_pop();
+
 
 	var world_tooltip = d3.select("#visuals").append("div")
 		.attr("class", "world_tooltip");
@@ -433,7 +430,6 @@ function draw_origin() {
 		.enter().append("rect")
 			.attr("height", 12)
 			.attr("x", function(d, i) {
-							//1220
 							var base = width*0.72;
 							switch(i) {
 									case 0:
@@ -482,7 +478,6 @@ function draw_origin() {
 			.remove();
 
 	d3.csv("origin_data.csv", function(data) {
-		//Maybe some data processing stuff
 
 		d3.json('us_states.json', function(error, json) {
 			for (var i = 0; i < data.length; i++) {
@@ -520,7 +515,6 @@ function draw_origin() {
 					redraw_world();
 						get_top_3(unauthorized_pop);
 										update_bar_chart();
-					//update_main_pop(top_3);
 										return "a6bddb";
 									}
 									else {
@@ -572,7 +566,6 @@ function draw_origin() {
 						get_top_3(total_unauthorized_pop);
 					}
 										update_bar_chart();
-					//update_main_pop(top_3);
 				});
 		});
 	});
