@@ -177,14 +177,14 @@ function draw_pie_chart() {
 	.sort(null);
 
 	// DACA PIE **********************************************************************
-	var daca_svg = d3.select("#pie_svg")
+	var svg = d3.select("#pie_svg")
 	.append('svg')
 	.attr('class', 'pie daca_pie')
 	.attr('width', w)
 	.attr('height', h + 20);
 
-	var daca_g = daca_svg.append('g')
-	.attr('transform', 'translate(' + (w / 2) + ',' + (h / 2) + ')')
+	var daca_g = svg.append('g')
+	.attr('transform', 'translate(' + (w / 2) + ',' + (height / 4) + ')')
 	.attr("class", "daca_g");
 
 	var daca_path = d3.arc()
@@ -223,7 +223,7 @@ function draw_pie_chart() {
 		.on("click", function() {
 			d3.select(".daca_pie").attr("fill-opacity", "1");
 			d3.selectAll(".daca, .daca_path, .daca_arc").attr("fill-opacity", "1");
-			d3.selectAll(".undocumented, .us, .us_path, .daca_ineligible_path").attr("fill-opacity", ".25");
+			d3.selectAll(".undocumented, .us, .us_path, .daca_ineligible_path").attr("filit l-opacity", ".25");
 		})
 
 	var daca_text = daca_arc.append("text")
@@ -252,7 +252,7 @@ function draw_pie_chart() {
 				return (d.endAngle + d.startAngle)/2 > Math.PI ?
 						"end" : "start";
 		})
-		var daca_total = daca_svg.append("text")
+		var daca_total = svg.append("text")
 		.text("Total: " + d3.format(".2s")(parseInt(daca_data[0].total)) + "*")
 		.attr("fill", "black")
 		.attr("class", "daca")
@@ -261,13 +261,13 @@ function draw_pie_chart() {
 
 
 	// DACA INELIGIBLE PIE ***********************************************************
-	var daca_ineligible_svg = d3.select("#pie_svg")
-		.append('svg')
-		.attr('class', 'pie daca_ineligible_pie')
-		.attr('width', w)
-		.attr('height', h + 20);
+	// var svg = d3.select("#pie_svg")
+	// 	.append('svg')
+	// 	.attr('class', 'pie daca_ineligible_pie')
+	// 	.attr('width', w)
+	// 	.attr('height', h + 20);
 
-	var daca_ineligible_g = daca_ineligible_svg.append('g')
+	var daca_ineligible_g = svg.append('g')
 	.attr('transform', 'translate(' + (w / 2) + ',' + (h / 2) + ')')
 	.style("background", "red")
 	.attr("class", "daca_ineligible_g");
@@ -338,7 +338,7 @@ function draw_pie_chart() {
 					return (d.endAngle + d.startAngle)/2 > Math.PI ?
 							"end" : "start";
 			})
-		var daca_ineligible_total = daca_ineligible_svg.append("text")
+		var daca_ineligible_total = svg.append("text")
 		.text("Total: " + d3.format(".2s")(parseInt(daca_ineligible_data[0].total)) + "*")
 		.attr("fill", "black")
 		.attr("text-anchor", "start")
@@ -347,21 +347,21 @@ function draw_pie_chart() {
 
 
 	// US PIE ************************************************************************
-	var us_svg = d3.select("#pie_svg")
-		.append('svg')
-		.attr('class', 'pie us_pie')
-		.attr('width', w)
-		.attr('height', h + 50);
+	// var svg = d3.select("#pie_svg")
+	// 	.append('svg')
+	// 	.attr('class', 'pie us_pie')
+	// 	.attr('width', w)
+	// 	.attr('height', h + 50);
 
-	var us_total = us_svg.append("text")
+	var us_total = svg.append("text")
 	.text("Total: " + d3.format(".2s")(parseInt(us_data[0].total)) + "*")
 	.attr("fill", "black")
 	.attr("class", "US")
 	.attr("text-anchor", "start")
 	.attr("transform", "translate(60, " + 200 + ")");
 
-	var us_g = us_svg.append('g')
-	.attr('transform', 'translate(' + (w / 2) + ',' + (h / 2) + ')')
+	var us_g = svg.append('g')
+	.attr('transform', 'translate(' + (w / 2) + ',' + (height / 2) + ')')
 	.style("background", "red")
 	.attr("class", "us_g");
 
