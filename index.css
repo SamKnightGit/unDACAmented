@@ -58,6 +58,14 @@ div.main_tt_title {
 	font-weight: bold;
 }
 
+rect.disabled {
+    fill: #DFDFDF;
+}
+
+text.disabled {
+    fill: #9F9F9F;
+}
+
 div.main_tt_header {
 	font-weight: lighter;
 }

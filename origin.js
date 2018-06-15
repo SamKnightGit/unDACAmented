@@ -327,28 +327,6 @@ function draw_origin(height) {
 		.attr("class", "card")
 		.attr("height", height);
 
-    var btn_div = d3.select("#visuals").append("div")
-        .style("position", "absolute")
-        .style("top", "80%")
-        .style("left", "17.5%");
-  
-    var whole_usa_btn = btn_div.append("button")  
-            .attr("class", "btn")
-            .style("fill", "#a6bddb")
-            .style("margin", "10px")
-            .style("width", "auto")
-            .text("Select Entire U.S.")
-            .on("mousedown", function() {
-                selected_state = null;
-                clear_america();
-                fill_america();
-                redraw_world();
-                get_top_3(total_unauthorized_pop);
-                update_bar_chart();
-                main_title.text( "USA" );
-                d3.select(this).classed("disabled", true);
-            });
-
 		var width = parseInt(svg_canvas.style("width").replace("px", ""));
 
 
@@ -411,6 +389,34 @@ function draw_origin(height) {
 		.attr("width", "100%")
 		.attr("height", height);
 
+    var btn_g = america_svg.append("g")
+        .attr("transform", "translate(" + width/6.5 + "," + height/1.75 + ")");
+    var whole_usa_btn = btn_g.append("rect")
+        .attr("class", "usa_btn btn")
+        .attr("fill", "#80a1cb")
+        .attr("margin", "10px")
+        .attr("width", width/6)
+        .on("mousedown", function() {
+                selected_state = null;
+                clear_america();
+                fill_america();
+                redraw_world();
+                get_top_3(total_unauthorized_pop);
+                update_bar_chart();
+                main_title.text( "USA" );
+                d3.select(this).classed("disabled", true);
+                usa_btn_text.class("disabled", "true");
+        });
+  
+    var usa_btn_text = btn_g.append("text")
+          .attr("transform", "translate(" + whole_usa_btn.attr("width")/2  + ", 24)")  
+          .style("fill", "white")
+          .attr("text-anchor", "middle")
+          .text("Select Entire U.S.")
+          .attr("pointer-events", "none");
+  
+    
+  
 	var us_projection = d3.geoAlbersUsa()
 		.scale(width/2.5)
 		.translate([width/4,height/3]);
@@ -505,25 +511,26 @@ function draw_origin(height) {
 				.attr("d", us_path)
 				.style("stroke", "grey")
 				.style("fill", function(d) {
-									if (d.id == "06") {
-										selected_state = d;
-										whole_usa_btn.classed("disabled", false);
-								main_title.text( d.properties.name );
-										clear_america();
-					redraw_world();
-						get_top_3(unauthorized_pop);
-										update_bar_chart();
-										return "a6bddb";
-									}
-									else {
-										return "white";
-									}
-								})
+				  if (d.id == "06") {
+                      selected_state = d;
+                      whole_usa_btn.classed("disabled", false);
+                      usa_btn_text.classed("disabled", false);
+                      main_title.text( d.properties.name );
+                      clear_america();
+                      redraw_world();
+                      get_top_3(unauthorized_pop);
+                      update_bar_chart();
+                      return "a6bddb";
+                  }
+                  else {
+                      return "white";
+                  }
+                })
 				.on("mouseover", function() {
 					clear_america();
 					d3.select(this)
-						.style("fill", "d2deed")
-												.style("cursor", "pointer");
+                    .style("fill", "d2deed")
+                    .style("cursor", "pointer");
 				})
 				.on("mouseout", function(d) {
 					d3.select(this)
@@ -541,12 +548,14 @@ function draw_origin(height) {
 				.on("mousedown", function(d) {
 					if (!selected_state) {
 						selected_state = d;
-												whole_usa_btn.classed("disabled", false);
+				        whole_usa_btn.classed("disabled", false);
+                        usa_btn_text.classed("disabled", false);
 						main_title.text( d.properties.name );
 					}
 					else {
 						if (d.id == selected_state.id) {
-														whole_usa_btn.classed("disabled", true);
+						    whole_usa_btn.classed("disabled", true);
+                            usa_btn_text.classed("disabled", true);
 							selected_state = null;
 							main_title.text( "USA" );
 						}
