@@ -36,15 +36,15 @@ function get_top_3(pop_object) {
 			}
 		}
 	}
-		var sum = 0;
-		for (var i = 3; i < pop_array.length; i++) {
-			sum += pop_array[i];
-		}
-		var percent = sum/total * 100;
-		data.push({
-			"Other": [sum, percent]
-		});
-		bar_data = data;
+    var sum = 0;
+    for (var i = 3; i < pop_array.length; i++) {
+        sum += pop_array[i];
+    }
+    var percent = sum/total * 100;
+    data.push({
+        "Other": [sum, percent]
+    });
+    bar_data = data;
 }
 
 
@@ -329,7 +329,7 @@ function draw_origin(height) {
 
     var btn_div = d3.select("#visuals").append("div")
         .style("position", "absolute")
-        .style("top", "70%")
+        .style("top", "80%")
         .style("left", "17.5%");
   
     var whole_usa_btn = btn_div.append("button")  
@@ -377,7 +377,7 @@ function draw_origin(height) {
 
 	var main_tooltip = svg_canvas.append("g")
 		.attr("class", "main_tooltip")
-        .attr("transform", "translate(" + (1.9*width)/5 + "," + height/3 + ")");
+        .attr("transform", "translate(" + (1.9*width)/5 + "," + height/2.1 + ")");
 
   
     var main_title = main_tooltip.append("text")
@@ -601,6 +601,28 @@ function draw_origin(height) {
 						d3.select(this)
 							.style("stroke", "black");
 					}
+                    
+                    bar_countries = bar_data.map( x => x.key );
+                    console.log(bar_countries);
+                    console.log(pretty_country_name(d.properties.name));
+                    console.log(bar_countries.indexOf(pretty_country_name(d.properties.name)));
+                    if (bar_countries.indexOf(pretty_country_name(d.properties.name)) != -1) {
+                        pop_bar.selectAll("rect")
+                          .style("stroke", function(rd) {
+                            if (rd.key == pretty_country_name(d.properties.name)) {
+                              return "black";
+                            }
+                          });
+                    }
+                    else {
+                      pop_bar.selectAll("rect")
+                        .style("stroke", function(rd) {
+                          if (rd.key == "Other") {
+                            return "black";
+                          }
+                        });
+                    }
+                    
 					world_country.text(pretty_country_name(d.properties.name));
 					world_percentage.text(d3.format(".2f")(unauthorized_percentage[d.properties.name]).toString() + "%");
 					world_tooltip.style("display", "inline");
@@ -623,6 +645,7 @@ function draw_origin(height) {
 					}
 					world_tooltip.style("display", "none");
 				}
+                pop_bar.selectAll("rect").style("stroke", "none");
 			});
 	});
 
