@@ -375,24 +375,24 @@ function draw_origin(height) {
 		.attr("width", "100%")
 		.attr("height", height);
 
-	var main_tooltip = d3.select("#visuals").append("div")
+	var main_tooltip = svg_canvas.append("g")
 		.attr("class", "main_tooltip")
-				.style("position", "absolute")
-				.style("top", "60%")
-				.style("left", "37.5%");
+        .attr("transform", "translate(" + (1.9*width)/5 + "," + height/2 + ")");
 
-	var row_title = main_tooltip.append("div")
-		.attr("class", "row")
-		.style("margin-bottom", "5px");
+  
+    var main_title = main_tooltip.append("text")
+        .attr("transform", "translate(" + width*0.13 + "-10)")
+        .text("California")
+        .style("text-anchor", "middle")
+	    .style("font-size", "20px")
+	    .style("font-weight", "bold");
 
-	var main_title = row_title.append("div")
-		.attr("class", "main_tt_title col s12")
-		.text("USA");
 
-		var pop_bar = main_tooltip.append("svg")
-			.attr("class", "pop_bar");
 
-		update_bar_chart();
+    var pop_bar = main_tooltip.append("svg")
+        .attr("class", "pop_bar");
+
+    update_bar_chart();
 
 
 	var world_tooltip = d3.select("#visuals").append("div")
