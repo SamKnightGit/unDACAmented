@@ -59,7 +59,6 @@ function draw_employment(width, height) {
 						return d;
 					})
 					.style("opacity", function(d) {
-						console.log("d", d);
 						return d === ' DACA Percent' ? "1" : ".25";
 					})
 					.style("fill", function(d) {
@@ -73,10 +72,8 @@ function draw_employment(width, height) {
 					.style("text-anchor", "end")
 					.text(function(d) {
 											var split = d.split(" ")[1];
-											console.log("split", split);
-											// console.log(split === "Undocumented");
 											if(split === "Undocumented") {
-												return "Daca-inelig.^ Workers";
+												return "DACA-Ineligible Workers";
 											}
 											return split + " Workers";
 										});
@@ -109,7 +106,6 @@ function draw_employment(width, height) {
 						d3.selectAll(".bar_g")
 							.selectAll("text")
 							.data(function(d) {
-								console.log(d);
 								return keys.map(function(key) {
 									return {key: key, value: d[key]};
 								});
@@ -124,7 +120,6 @@ function draw_employment(width, height) {
 								.style("font-size", "10px")
 								.style("font-weight", "normal")
 								.style("opacity", function(d) {
-									console.log(d.key);
 									if (d.key == " DACA Percent") {
 										return 1;
 									}
@@ -238,7 +233,7 @@ function draw_pie_chart(width, height) {
 
 	legend.append("text")
 		.attr("fill", "black")
-		.text("Not in Labor Force **")
+		.text("Not in Labor Force *")
 		.attr("dx", w/4)
 		.attr("dy", 10)
 		.style("font-size", "12px");
@@ -296,7 +291,8 @@ function draw_pie_chart(width, height) {
 		.attr("width", 20)
 		.attr("class", "undocumented undocumented_legend")
 		.attr("height", 10)
-		.style("fill", "#fc8d62");
+		.style("fill", "#fc8d62")
+        .style("opacity", "0.25");
 
 	legend.append("line")
 		.style("stroke", "grey")
@@ -312,7 +308,8 @@ function draw_pie_chart(width, height) {
 		.attr("width", 20)
 		.attr("class", "us us_legend")
 		.attr("height", 10)
-		.style("fill", "#8da0cc");
+		.style("fill", "#8da0cc")
+        .style("opacity", "0.25");
 
 	legend.append("line")
 		.style("stroke", "grey")
@@ -422,7 +419,7 @@ function draw_pie_chart(width, height) {
 						"end" : "start";
 		})
 		var daca_total = daca_svg.append("text")
-		.text("Total* Daca Pop.: " + d3.format(".2s")(parseInt(daca_data[0].total)).replace(/k/,"K"))
+		.text("Daca Population: " + d3.format(".2s")(parseInt(daca_data[0].total)).replace(/k/,"K"))
 		.attr("fill", "black")
 		.attr("class", "daca")
 		.attr("text-anchor", "start")
@@ -511,7 +508,7 @@ function draw_pie_chart(width, height) {
 							"end" : "start";
 			})
 		var daca_ineligible_total = daca_ineligible_svg.append("text")
-		.text("Total* Daca-inelig.^ Pop.: " + d3.format(".2s")(parseInt(daca_ineligible_data[0].total)))
+		.text("DACA-Ineligible Pop.: " + d3.format(".2s")(parseInt(daca_ineligible_data[0].total)))
 		.attr("fill", "black")
 		.attr("text-anchor", "start")
 		.attr("class", "undocumented")
@@ -526,10 +523,10 @@ function draw_pie_chart(width, height) {
 		.attr('height', h + 50);
 
 	var us_total = us_svg.append("text")
-	.text("Total* US Pop.: " + d3.format(".2s")(parseInt(us_data[0].total)))
+	.text("US Population: " + d3.format(".2s")(parseInt(us_data[0].total)))
 	.attr("fill", "black")
 	.attr("class", "US")
-	.attr("text-anchor", "start")
+	.attr("text-anchor", "left")
 	.attr("transform", "translate(40, " + 200 + ")");
 
 	var us_g = us_svg.append('g')
@@ -648,7 +645,7 @@ function draw_integration() {
 
 		d3.select("#bar_svg")
 			.style("text-align", "center")
-			.text("Occupation by industry 2017")
+			.text("Percentage of Workforce by Occupation, 2017")
 			.style("font-size", "15px")
 			.style("padding", "10px")
 			.style("font-weight", "bolder");
@@ -664,15 +661,15 @@ function draw_integration() {
 
 		d3.select("#visuals").append("p")
 		.attr("class", "footnote")
-		.text("* Total population age 16 and over")
+		.text("Charts represent total population age 16 and over")
 
 		d3.select("#visuals").append("p")
 		.attr("class", "footnote")
-		.text("** Persons not in the labor force by desire and availability for work, age, and sex ")
+		.text("* Persons not in the labor force by desire and availability for work, age, and sex ")
 
 		d3.select("#visuals").append("p")
 		.attr("class", "footnote")
-		.text("^ Daca-ineligible immigrants are undocumented immigrants who do not meet the following requirements: must be under 31 years of age as of June 15, 2012, came to the US while under 16, have continuoulsy resided in U.S from June 15, 2007, passed a criminal background check.");
+		.text("Daca-ineligible immigrants are undocumented immigrants who do not meet the following requirements: must be under 31 years of age as of June 15, 2012, came to the US while under 16, have continuoulsy resided in U.S from June 15, 2007, passed a criminal background check.");
 
 		d3.select(".footnote").style("text-align", "left");
 

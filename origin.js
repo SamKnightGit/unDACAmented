@@ -1,6 +1,3 @@
-var width=$(window).width();
-console.log(width);
-
 var total_unauthorized_pop = {
 	"mexico":1254083,
 	"other_north":239723,
@@ -55,26 +52,6 @@ function get_top_3(pop_object) {
 build_percentage(total_unauthorized_pop, get_total_pop(total_unauthorized_pop));
 get_top_3(total_unauthorized_pop);
 
-
-var pop_scale = d3.scaleLinear()
-		.rangeRound([150, 10]);
-
-var region_scale = d3.scaleBand()
-			.rangeRound([55, 285])
-			.paddingInner(0.2);
-
-var greens = d3.schemeGreens[5];
-
-var color = d3.scaleThreshold()
-	.domain([1, 5, 20, 50, 100])
-	.range(greens);
-
-var key_base = width/1.45;
-var key_scale = d3.scalePow()
-		.exponent(0.5)
-	.domain([0, 100])
-	.rangeRound([key_base, key_base*1.25]);
-
 function build_pop(state_pop) {
 	for (var property in state_pop) {
 		if (state_pop.hasOwnProperty(property)) {
@@ -128,9 +105,28 @@ function pretty_country_name(country_name) {
 
 var selected_state = null;
 
-function draw_origin() {
+function draw_origin(height) {
 	/* global d3 */
-	var height=600;
+    var width=$(window).width();
+  
+    var greens = d3.schemeGreens[5];
+
+    var color = d3.scaleThreshold()
+        .domain([1, 5, 20, 50, 100])
+        .range(greens);
+
+    var key_base = width/1.45;
+    var key_scale = d3.scalePow()
+            .exponent(0.5)
+        .domain([0, 100])
+        .rangeRound([key_base, key_base*1.25]);
+
+    var pop_scale = d3.scaleLinear()
+		.rangeRound([height*0.29, 10]);
+
+    var region_scale = d3.scaleBand()
+		.rangeRound([55, width*0.23])
+		.paddingInner(0.2);
 
 	d3.select("#visuals").remove();
 	d3.select("svg").remove();
@@ -184,7 +180,7 @@ function draw_origin() {
 			});
 	}
 
-		function update_bar_chart() {
+    function update_bar_chart() {
 			var regions_pop = [];
 			var regions = [];
 			for (var i = 0; i < bar_data.length; i++) {
@@ -215,7 +211,7 @@ function draw_origin() {
 				})
 				.attr("width", region_scale.bandwidth())
 				.attr("height", function(d) {
-					return 150 - pop_scale(d.value);
+					return height*0.29 - pop_scale(d.value);
 				})
 				.style("fill", function(d) {
 					return color(d.percent);
@@ -252,7 +248,7 @@ function draw_origin() {
 			pop_bar.selectAll("text").remove();
 			pop_bar.append("g")
 				.attr("class", "no_domain")
-				.attr("transform", "translate(0," + 150 + ")")
+				.attr("transform", "translate(0," + height*0.29 + ")")
 				.call(xAxis)
 				.selectAll("text")
 				.call(wrap, region_scale.bandwidth());
@@ -280,7 +276,7 @@ function draw_origin() {
 				})
 				.attr("width", region_scale.bandwidth())
 				.attr("height", function(d) {
-					return 150 - pop_scale(d.value);
+					return height/2 - pop_scale(d.value);
 				})
 				.attr("text-anchor", "middle")
 				.attr("font-size", "10px")
@@ -291,8 +287,8 @@ function draw_origin() {
 			pop_bar.append("g")
 				.append("text")
 					.attr("text-anchor", "middle")
-					.attr("x", 153)
-					.attr("y", 207)
+					.attr("x", (55+(width*0.23))/2)
+					.attr("y", height*0.37)
 					.attr("font-weight", "bold")
 					.attr("font-size", "12px")
 					.text("Region");
@@ -300,7 +296,7 @@ function draw_origin() {
 			pop_bar.append("g")
 				.append("text")
 					.attr("transform", "rotate(-90)")
-					.attr("x", -85)
+					.attr("x", -height/6)
 					.attr("y", 15)
 					.attr("dy", "0.32em")
 					.attr("fill", "#000")
@@ -331,25 +327,27 @@ function draw_origin() {
 		.attr("class", "card")
 		.attr("height", height);
 
-		var whole_usa_btn = d3.select("#visuals").append("button")
-				.attr("class", "btn")
-				.style("background", "#a6bddb")
-				.style("position","absolute")
-				.style("bottom", "7%")
-				.style("left", "18%")
-				.style("margin", "10px")
-				.style("width", "auto")
-				.text("Select Entire U.S.")
-				.on("mousedown", function() {
-					selected_state = null;
-					clear_america();
-					fill_america();
-					redraw_world();
-					get_top_3(total_unauthorized_pop);
-					update_bar_chart();
-					main_title.text( "USA" );
-					d3.select(this).classed("disabled", true);
-				});
+    var btn_div = d3.select("#visuals").append("div")
+        .style("position", "absolute")
+        .style("top", "70%")
+        .style("left", "17.5%");
+  
+    var whole_usa_btn = btn_div.append("button")  
+            .attr("class", "btn")
+            .style("fill", "#a6bddb")
+            .style("margin", "10px")
+            .style("width", "auto")
+            .text("Select Entire U.S.")
+            .on("mousedown", function() {
+                selected_state = null;
+                clear_america();
+                fill_america();
+                redraw_world();
+                get_top_3(total_unauthorized_pop);
+                update_bar_chart();
+                main_title.text( "USA" );
+                d3.select(this).classed("disabled", true);
+            });
 
 		var width = parseInt(svg_canvas.style("width").replace("px", ""));
 
@@ -454,7 +452,6 @@ function draw_origin() {
 			.attr("height", 12)
 			.attr("x", function(d) { return key_scale(d[0]); })
 			.attr("width", function(d) {
-														console.log(key_scale(d[1])-key_scale(d[0]));
 							return key_scale(d[1])-key_scale(d[0]);
 						})
 			.attr("fill", function(d, i) { return color(d[0]); });

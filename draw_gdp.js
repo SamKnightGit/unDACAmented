@@ -1,7 +1,6 @@
 function draw_gdp() {
 	var width=$(window).width();
-	console.log("width in gdp", width);
-	var height=700;
+	var height=$(window).height()*0.6;
 	var togData = false;
 	d3.select("#visuals").remove();
 	d3.select("svg").remove();
@@ -40,6 +39,7 @@ function draw_gdp() {
 			.attr("class", "col s7")
 			.style("padding-right", "0px")
 				.append("p")
+            .attr("class", "gdp_p_label")
 			.text("GDP Contributed")
 			.style("text-align", "left");
 
@@ -92,13 +92,10 @@ function draw_gdp() {
 			.style("margin-right", "2px");
 
 	var checkTog = function() {
-		console.log("checking togg");
 		if(togData == false) {
-			console.log(togData, "money lose");
 			d3.select(".money_loss").style("display", "block");
 			d3.select(".money_gain").style("display", "none");
 		} else {
-			console.log(togData, "money gain");
 			d3.select(".money_loss").style("display", "none");
 			d3.select(".money_gain").style("display", "block");
 		}
@@ -112,7 +109,7 @@ function draw_gdp() {
 						.style("right", "8%")
 			.style("margin", "10px")
 			.style("width", "15%")
-			.text("Naturalized DACA")
+			.text("Naturalized DACA *")
 			// .attr("transform", "translate(" + width / 2+ ", 800)");
 
 	//Define map projection
@@ -185,15 +182,12 @@ function draw_gdp() {
 
 				var daca_pop = parseInt(data[i]["DACA Population"])
 				var code = data[i].code;
-				console.log("data[i]", data[i]);
-				console.log("code", data[i].code);
 
 
 				total_loss += parseInt(data[i]["GDP Loss"]);
 				if(data[i]["GDP Gain Education"]) {
 					total_gain += parseInt(data[i]["GDP Gain Education"]);
 				}
-				console.log("total_gain", total_gain)
 				//Find the corresponding state inside the GeoJSON
 				for (var j = 0; j < json.features.length; j++) {
 					var jsonState = json.features[j].properties.name;
@@ -408,7 +402,6 @@ function draw_gdp() {
 					.on("click", function(){
 						// Determine if current line is visible
 						togData=!togData;
-						//console.log(togData);
 						if (togData == false){
 							svg_canvas.selectAll("path")
 								.transition().duration(1000)
@@ -425,8 +418,9 @@ function draw_gdp() {
 								d3.select(".total_dollars").transition().duration(1000).style("fill", "#52a26b");
 								d3.select(".total_dollars_text").transition().duration(1000).text("$" + loss);
 								d3.select(".total_dollars_text_curr").text("Contributed");
-								d3.select(this).style("background", "#3e86bd").text("Naturalized Daca")
+								d3.select(this).style("background", "#3e86bd").text("Naturalized Daca *")
 								title.text("DACA Workers' GDP Contribution, 2017");
+                                d3.select(".gdp_p_label").text("GDP Contributed");
 								format_label();
 							} else {
 								svg_canvas.selectAll("path")
@@ -446,6 +440,7 @@ function draw_gdp() {
 									d3.select(".total_dollars_text_curr").text("Gained *");
 									d3.select(this).style("background", "#52a26b").text("Current DACA");
 									title.text("Economic Benefits of Naturalizing DACA Recipients 2017");
+                                    d3.select(".gdp_p_label").text("GDP Gained");
 									format_label();
 							}
 						});
@@ -482,7 +477,7 @@ function draw_gdp() {
 	// .attr("text-anchor", "middle")
 	// .attr("font-size", "20px")
 	// .attr("font-weight", "bold")
-	 .text("* In this projection, the Center for American Progress is estimating a scenario in which we assume that half of those eligible for the Dream Act obtain LPR status through the educational pathway by gaining either an associate’s degree or two years toward a bachelor’s degree. With a greater number of workers now having higher levels of education, their total productivity—and their economic contributions—increase.*")
+	 .text("* In this projection, the Center for American Progress is estimating a scenario in which we assume that half of those eligible for the Dream Act obtain LPR status through the educational pathway by gaining either an associate’s degree or two years toward a bachelor’s degree. With a greater number of workers now having higher levels of education, their total productivity—and their economic contributions—increase.")
 
 
 }

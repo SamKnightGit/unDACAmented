@@ -3,7 +3,8 @@ $(document).ready(function() {
 	var second_subtitle = "What makes us American is not a question of what we look like, or where our names come from, or the way we pray. What makes us American is our fidelity to a set of ideals -- that all of us are created equal. - Barack Obama"
 	var third_subtitle = "DACA population has a substantial impact on US economy. If you care about DACA recipients - your neighbors, friends, and family - please register to vote and push for policies that benefit America as a whole."
 
-	draw_origin();
+    var origin_height = $(window).height()*0.6;
+	draw_origin(origin_height);
 	var selected_btn_class = "btn-floating waves-effect waves-light blue";
 	var btn_ids = ['#Origin_Btn', '#GDP_Btn', '#Integration_Btn'];
 	var label_ids = ['#Origin_Label', '#GDP_Label', '#Integration_Label'];
@@ -28,7 +29,7 @@ $(document).ready(function() {
 			$( '#Origin_Label' ).removeClass('labels');
 			$( '#Origin_Label' ).addClass('label_selected');
 			$(".subtitle").text(first_subtitle);
-			draw_origin();
+			draw_origin(origin_height);
 		}
 	});
 
