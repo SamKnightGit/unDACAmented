@@ -377,7 +377,7 @@ function draw_origin(height) {
 
 	var main_tooltip = svg_canvas.append("g")
 		.attr("class", "main_tooltip")
-        .attr("transform", "translate(" + (1.9*width)/5 + "," + height/2 + ")");
+        .attr("transform", "translate(" + (1.9*width)/5 + "," + height/3 + ")");
 
   
     var main_title = main_tooltip.append("text")
