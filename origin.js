@@ -142,7 +142,7 @@ function draw_origin(height) {
 			america_svg.selectAll("path")
 				.style("fill", function(d) {
 					if(d.id == selected_state.id) {
-						return "a6bddb";
+						return "#a6bddb";
 					}
 					else {
 						return "white";
@@ -157,7 +157,7 @@ function draw_origin(height) {
 
 	function fill_america() {
 		america_svg.selectAll("path")
-			.style("fill", "a6bddb");
+			.style("fill", "#a6bddb");
 	}
 
 	function redraw_world() {
@@ -172,7 +172,7 @@ function draw_origin(height) {
 			.style("fill", function (d) {
 				var region = d.properties.name;
 				if (region == "united_states") {
-					return "d8d8d8";
+					return "#d8d8d8";
 				}
 				else {
 					return color(unauthorized_percentage[region]);
@@ -405,7 +405,7 @@ function draw_origin(height) {
                 update_bar_chart();
                 main_title.text( "USA" );
                 d3.select(this).classed("disabled", true);
-                usa_btn_text.class("disabled", "true");
+                usa_btn_text.classed("disabled", "true");
         });
   
     var usa_btn_text = btn_g.append("text")
@@ -520,7 +520,7 @@ function draw_origin(height) {
                       redraw_world();
                       get_top_3(unauthorized_pop);
                       update_bar_chart();
-                      return "a6bddb";
+                      return "#a6bddb";
                   }
                   else {
                       return "white";
@@ -529,8 +529,13 @@ function draw_origin(height) {
 				.on("mouseover", function() {
 					clear_america();
 					d3.select(this)
-                    .style("fill", "d2deed")
-                    .style("cursor", "pointer");
+                    	.style("fill", function(d) {
+							if (selected_state == null) {
+								return "#d2deed"
+							}
+							return (d.id == selected_state.id) ? "#a6bddb" : "#d2deed"
+						})
+                    	.style("cursor", "pointer");
 				})
 				.on("mouseout", function(d) {
 					d3.select(this)
@@ -541,7 +546,7 @@ function draw_origin(height) {
 					else {
 						if(d.id == selected_state.id) {
 							d3.select(this)
-								.style("fill", "a6bddb")
+								.style("fill", "#a6bddb")
 						}
 					}
 				})
@@ -572,7 +577,7 @@ function draw_origin(height) {
 					else {
 						get_top_3(total_unauthorized_pop);
 					}
-										update_bar_chart();
+					update_bar_chart();
 				});
 		});
 	});
@@ -587,7 +592,7 @@ function draw_origin(height) {
 			.style("fill", function(d) {
 				var region = d.properties.name;
 				if (region == "united_states") {
-					return "d8d8d8";
+					return "#d8d8d8";
 				}
 				else {
 					return color(unauthorized_percentage[region]);

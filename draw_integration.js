@@ -141,10 +141,11 @@ function draw_employment(width, height) {
 				.append("text")
 					.attr("text-anchor", "middle")
 					.attr("x", width/2)
-					.attr("y", height + 120)
+					.attr("y", height)
 					.attr("font-weight", "bold")
 					.attr("font-size", "16px")
-					.text("Occupation");
+					.text("Occupation")
+					.attr("translate", "translate(0, -200)");
 
 			g.append("g")
 				.attr("class", "no_domain")
