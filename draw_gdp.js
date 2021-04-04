@@ -10,22 +10,25 @@ function draw_gdp() {
 		.transition().duration(200);
 
 	var svg_canvas = d3.select("#visuals").append("svg")
-		.attr("width", "100%")
-		.attr("height", height - 100)
-		.attr("class", "gdp_canvas card");
+		.attr("class", "gdp_canvas card")
+		.attr("viewBox", `0, 0, 1700, 670`);
+
+	var width = parseInt(svg_canvas.style("width").replace("px", ""));
+	var height = parseInt(svg_canvas.style("height").replace("px", ""));
+	var svg_canvas_bounds = svg_canvas.node().getBoundingClientRect()
 
 	var tooltip = d3.select("#visuals").append("div")
 			.attr("class", "tooltip card")
-			.style("width", width/5)
+			.style("width", (width * 0.15))
 			.style("border", "1px solid black")
 			.style("opacity", 0)
 			.style("position", "absolute")
-			.style("bottom", "9%")
-			.style("left", "4%")
+			.style("top", `${svg_canvas_bounds.y + (svg_canvas_bounds.height * 0.5)}`)
+			.style("left", `${svg_canvas_bounds.x + (width * 0.075)}px`)
 			.style("margin", "10px")
 			.style("padding", "10px")
-						.style("padding-top", "0px")
-						.style("padding-bottom", "0px");
+			.style("padding-top", "0px")
+			.style("padding-bottom", "0px");
 
 	tooltip.append("p").attr("class", "state_name")
 		.style("font-weight", "bolder")
@@ -91,31 +94,10 @@ function draw_gdp() {
 			.style("text-align", "right")
 			.style("margin-right", "2px");
 
-	var checkTog = function() {
-		if(togData == false) {
-			d3.select(".money_loss").style("display", "block");
-			d3.select(".money_gain").style("display", "none");
-		} else {
-			d3.select(".money_loss").style("display", "none");
-			d3.select(".money_gain").style("display", "block");
-		}
-	}
-
-	var naturalized_daca_btn = d3.select("#visuals").append("button")
-			.attr("class", "toggleBtnGain btn")
-			.style("background", "#3e86bd")
-						.style("position", "absolute")
-						.style("bottom", "15%")
-						.style("right", "8%")
-			.style("margin", "10px")
-			.style("width", "15%")
-			.text("Naturalized DACA *")
-			// .attr("transform", "translate(" + width / 2+ ", 800)");
-
 	//Define map projection
 	var projection = d3.geoAlbersUsa()
-	.translate([width / 2, (height / 2) - 100])
-	.scale([width / 1.5]);
+		.translate([(width * 0.5), (height * 0.45)])
+		.scale([width / 1.5]);
 
 	// color scale using user defined domain
 	var gdp_current_color = d3.scaleQuantile()
@@ -127,9 +109,9 @@ function draw_gdp() {
 		.range(["#f0f9e8","#bae4bc","#7bccc4","#43a2ca","#0868ac"]);
 
 
-	svg_canvas.append("g")
-	.attr("class", "gdp_legend")
-	.attr("transform", "translate(" + (width - (width / 4))  + ", " + height/4 + ")");
+	var legend = svg_canvas.append("g")
+		.attr("class", "gdp_legend")
+		.attr("transform", "translate(" + (width - (width / 4))  + ", " + height/4 + ")");
 
 	var us_map = svg_canvas.append("g")
 	.attr("class", "us_map")
@@ -165,6 +147,29 @@ function draw_gdp() {
 
 	svg_canvas.select(".gdp_legend").call(legend_loss);
 
+
+	
+	var checkTog = function() {
+		if(togData == false) {
+			d3.select(".money_loss").style("display", "block");
+			d3.select(".money_gain").style("display", "none");
+		} else {
+			d3.select(".money_loss").style("display", "none");
+			d3.select(".money_gain").style("display", "block");
+		}
+	}
+
+	var naturalized_daca_btn_width = (width * 0.1)
+	var naturalized_daca_btn = d3.select("#visuals").append("button")
+			.attr("class", "toggleBtnGain btn")
+			.style("background", "#3e86bd")
+			.style("position", "absolute")
+			.style("top", `${svg_canvas_bounds.y + (svg_canvas_bounds.height * 0.6)}`)
+			.style("left", `${svg_canvas_bounds.x + (width * 0.779)}px`)
+			.style("margin", "10px")
+			.style("width", `${naturalized_daca_btn_width}px`)
+			.text("Naturalized DACA *");
+			// .attr("transform", "translate(" + width / 2+ ", 800)");
 	// Define path generator
 	var path = d3.geoPath().projection(projection);
 	var total_loss = 0;
@@ -213,8 +218,8 @@ function draw_gdp() {
 
 			var circle = svg_canvas.append("g");
 			circle.append("circle")
-						.attr("cx", width / 8)
-						.attr("cy", height/5)
+						.attr("cx", (width * 0.15))
+						.attr("cy", (height * 0.2))
 			.attr("r", 75)
 			.attr("id", "total")
 			.attr("class", "total_dollars")
@@ -232,7 +237,7 @@ function draw_gdp() {
 							.attr("class", "total_dollars_text")
 							.attr("position", "relative")
 							.attr("text-anchor", "middle")
-							.style("transform", "translate(" + width/8 + "px," + height/5 + "px)")
+							.style("transform", "translate(" + (width * 0.15) + "px," + (height * 0.2) + "px)")
 							.style("fill", "white")
 							.text("$" + loss);
 
@@ -241,7 +246,7 @@ function draw_gdp() {
 							.attr("class", "total_dollars_text_curr")
 							.attr("position", "relative")
 							.attr("text-anchor", "middle")
-							.style("transform", "translate(" + width/8 + "px," + ((height/5) + 20) + "px)")
+							.style("transform", "translate(" + (width * 0.15) + "px," + ((height * 0.2) + 20) + "px)")
 							.style("fill", "white")
 							.text("Contributed");
 
@@ -319,7 +324,7 @@ function draw_gdp() {
 					.append("text")
 					.attr("class", "state-labels")
 					.text(function(d) {
-						if (d.properties.code == "RI" || d.properties.code == "DE"){
+						if (d.properties.code == "RI" || d.properties.code == "DE" || d.properties.code == "DC"){
 							return "";
 						}
 						return d.properties.code;

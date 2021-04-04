@@ -8,7 +8,6 @@ $(document).ready(function() {
 	var selected_btn_class = "btn-floating waves-effect waves-light blue";
 	var btn_ids = ['#Origin_Btn', '#GDP_Btn', '#Integration_Btn'];
 	var label_ids = ['#Origin_Label', '#GDP_Label', '#Integration_Label'];
-	var div_ids = [''];
 
 	function reset_selected() {
 		for (var i = 0; i < 3; i++)
@@ -19,7 +18,6 @@ $(document).ready(function() {
 			$( label_ids[i] ).addClass('labels');
 		}
 	}
-
 
 	$( "#Origin_Btn" ).click(function() {
 		if ($( this ).attr('class') != selected_btn_class) {
@@ -53,7 +51,6 @@ $(document).ready(function() {
 			$( '#GDP_Label' ).removeClass('labels');
 			$( '#GDP_Label' ).addClass('label_selected');
 			$(".subtitle").text(third_subtitle);
-			console.log("gdp btn clicked");
 			$("#visuals").toggle();
 			$("#gdp_visuals").toggle();
 			draw_gdp();

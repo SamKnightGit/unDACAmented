@@ -168,7 +168,7 @@ function draw_employment(width, height) {
 }
 
 
-function draw_pie_chart(width, height) {
+function  draw_pie_chart(width, height) {
 
 	// Employment Rate Data broken down by DACA, DACA Ineligible, and US
 	var daca_data = [
@@ -349,7 +349,7 @@ function draw_pie_chart(width, height) {
 	.attr('height', h + 20);
 
 	var daca_g = daca_svg.append('g')
-	.attr('transform', 'translate(' + (w / 2) + ',' + (h / 2) + ')')
+	.attr('transform', 'translate(' + (w * 0.95) + ',' + (h / 2) + ')')
 	.attr("class", "daca_g");
 
 	var daca_path = d3.arc()
@@ -424,7 +424,7 @@ function draw_pie_chart(width, height) {
 		.attr("fill", "black")
 		.attr("class", "daca")
 		.attr("text-anchor", "start")
-		.attr("transform", "translate(40, 160)");
+		.attr("transform", "translate(" + (w * 0.6) + "," + h + ")");
 
 
 	// DACA INELIGIBLE PIE ***********************************************************
@@ -435,7 +435,7 @@ function draw_pie_chart(width, height) {
 		.attr('height', h + 20);
 
 	var daca_ineligible_g = daca_ineligible_svg.append('g')
-	.attr('transform', 'translate(' + (w / 2) + ',' + (h / 2) + ')')
+	.attr('transform', 'translate(' + (w * 0.95) + ',' + (h / 2) + ')')
 	.style("background", "red")
 	.attr("class", "daca_ineligible_g");
 
@@ -513,7 +513,7 @@ function draw_pie_chart(width, height) {
 		.attr("fill", "black")
 		.attr("text-anchor", "start")
 		.attr("class", "undocumented")
-		.attr("transform", "translate(20, 155)");
+		.attr("transform", 'translate(' + (w * 0.55) + ',' + h + ')');
 
 
 	// US PIE ************************************************************************
@@ -528,10 +528,10 @@ function draw_pie_chart(width, height) {
 	.attr("fill", "black")
 	.attr("class", "US")
 	.attr("text-anchor", "left")
-	.attr("transform", "translate(40, " + 200 + ")");
+	.attr("transform", "translate(" + (w * 0.6) + ", " + 200 + ")");
 
 	var us_g = us_svg.append('g')
-	.attr('transform', 'translate(' + (w / 2) + ',' + (h / 2) + ')')
+	.attr('transform', 'translate(' + (w * 0.95) + ',' + (h / 2) + ')')
 	.style("background", "red")
 	.attr("class", "us_g");
 
@@ -661,15 +661,15 @@ function draw_integration() {
 		draw_employment(width, height);
 
 		d3.select("#visuals").append("p")
-		.attr("class", "footnote")
+		.attr("class", "footnote col s12")
 		.text("Charts represent total population age 16 and over")
 
 		d3.select("#visuals").append("p")
-		.attr("class", "footnote")
+		.attr("class", "footnote col s12")
 		.text("* Persons not in the labor force by desire and availability for work, age, and sex ")
 
 		d3.select("#visuals").append("p")
-		.attr("class", "footnote")
+		.attr("class", "footnote col s12")
 		.text("Daca-ineligible immigrants are undocumented immigrants who do not meet the following requirements: must be under 31 years of age as of June 15, 2012, came to the US while under 16, have continuoulsy resided in U.S from June 15, 2007, passed a criminal background check.");
 
 		d3.select(".footnote").style("text-align", "left");

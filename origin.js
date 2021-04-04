@@ -323,9 +323,8 @@ function draw_origin(height) {
 	d3.select("svg").remove();
 
 	var svg_canvas = d3.select("#visuals").append("svg")
-		.attr("width", "100%")
 		.attr("class", "card")
-		.attr("height", height);
+		.attr("viewBox", `0, 0, 1900, 710`);
 
 		var width = parseInt(svg_canvas.style("width").replace("px", ""));
 
@@ -355,7 +354,7 @@ function draw_origin(height) {
 
 	var main_tooltip = svg_canvas.append("g")
 		.attr("class", "main_tooltip")
-        .attr("transform", "translate(" + (1.9*width)/5 + "," + height/2.1 + ")");
+        .attr("transform", "translate(" + (width * 0.38) + "," + (height * 0.45) + ")");
 
   
     var main_title = main_tooltip.append("text")
@@ -464,7 +463,7 @@ function draw_origin(height) {
 
 	key.append("text")
 			.attr("class", "caption")
-			.attr("x", "73%")
+			.attr("x", width*0.72)
 			.attr("y", -10)
 			.style("font-size", "12px")
 			.attr("fill", "#000")
