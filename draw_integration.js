@@ -71,19 +71,21 @@ function draw_employment(width, height) {
 					.attr("dy", ".35em")
 					.style("text-anchor", "end")
 					.text(function(d) {
-											var split = d.split(" ")[1];
-											if(split === "Undocumented") {
-												return "DACA-Ineligible Workers";
-											}
-											return split + " Workers";
-										});
+						var split = d.split(" ")[1];
+						if(split === "Undocumented") {
+							return "DACA-Ineligible Workers";
+						}
+						return split + " Workers";
+					});
 
 			g.append("g")
 				.selectAll("g")
 				.data(data)
 				.enter().append("g")
-										.attr("class", "bar_g")
-					.attr("transform", function(d) {return "translate(" + occupation_scale(d.Occupation) + ",0)";})
+					.attr("class", "bar_g")
+					.attr("transform", function(d) {
+						return "translate(" + occupation_scale(d.Occupation) + ",0)";
+					})
 				.selectAll("rect")
 				.data(function(d) { return keys.map(function(key) { return {key: key, value: d[key]}; }); })
 				.enter().append("rect")
@@ -103,31 +105,31 @@ function draw_employment(width, height) {
 
 
 
-						d3.selectAll(".bar_g")
-							.selectAll("text")
-							.data(function(d) {
-								return keys.map(function(key) {
-									return {key: key, value: d[key]};
-								});
-							})
-							.enter().append("text")
-								.attr("class", function(d) {return d.key; })
-								.attr("x", function(d) {return data_scale(d.key) + data_scale.bandwidth() / 2; })
-								.attr("y", function(d) {return y(d.value)-2; })
-								.attr("width", data_scale.bandwidth())
-								.attr("height", function(d) { return height - y(d.value);})
-								.style("text-anchor", "middle")
-								.style("font-size", "10px")
-								.style("font-weight", "normal")
-								.style("opacity", function(d) {
-									if (d.key == " DACA Percent") {
-										return 1;
-									}
-									else {
-										return 0.25;
-									}
-								})
-								.text(function(d) {return  d.value});
+			d3.selectAll(".bar_g")
+				.selectAll("text")
+				.data(function(d) {
+					return keys.map(function(key) {
+						return {key: key, value: d[key]};
+					});
+				})
+				.enter().append("text")
+					.attr("class", function(d) {return d.key; })
+					.attr("x", function(d) {return data_scale(d.key) + data_scale.bandwidth() / 2; })
+					.attr("y", function(d) {return y(d.value)-2; })
+					.attr("width", data_scale.bandwidth())
+					.attr("height", function(d) { return height - y(d.value);})
+					.style("text-anchor", "middle")
+					.style("font-size", "10px")
+					.style("font-weight", "normal")
+					.style("opacity", function(d) {
+						if (d.key == " DACA Percent") {
+							return 1;
+						}
+						else {
+							return 0.25;
+						}
+					})
+					.text(function(d) {return  d.value});
 
 			g.append("g")
 				.attr("class", "no_domain")
@@ -141,7 +143,7 @@ function draw_employment(width, height) {
 				.append("text")
 					.attr("text-anchor", "middle")
 					.attr("x", width/2)
-					.attr("y", height)
+					.attr("y", height * 1.25)
 					.attr("font-weight", "bold")
 					.attr("font-size", "16px")
 					.text("Occupation")
@@ -199,9 +201,8 @@ function  draw_pie_chart(width, height) {
 	var h = height / 5;
 	var duration = 750;
 
-	// scale readius based on gro
-	var radius = (Math.min(w, h) / 2);
-	var min = d3.min([parseInt(daca_data[0].total), parseInt(daca_ineligible_data[0].total), parseInt(us_data[0].total)]);
+	// scale radius based on svg size
+	var radius = (Math.min(w, h) * 0.5);
 	var max = d3.max([parseInt(daca_data[0].total), parseInt(daca_ineligible_data[0].total), parseInt(us_data[0].total)]);
 	var radius_scale = d3.scaleSqrt().domain([0, max]).range([20, radius]);
 	var daca_radius = radius_scale(daca_data[0].total);
@@ -218,7 +219,7 @@ function  draw_pie_chart(width, height) {
 		.append("svg")
 		.attr("width", w)
 		.attr("height", 60)
-		.attr('transform', 'translate(0,' + (h / 8) + ')')
+		.attr('transform', 'translate(' + (w * 0.15) + ',' + 0 + ')')
 
 	var legend = legend_svg.append('g')
 		.attr('transform', 'translate(0,0)');
@@ -343,14 +344,14 @@ function  draw_pie_chart(width, height) {
 
 	// DACA PIE **********************************************************************
 	var daca_svg = d3.select("#pie_svg")
-	.append('svg')
-	.attr('class', 'pie daca_pie')
-	.attr('width', "100%")
-	.attr('height', h + 20);
+		.append('svg')
+		.attr('class', 'pie daca_pie')
+		.attr('width', "100%")
+		.attr('height', (daca_radius * 2) + 100);
 
 	var daca_g = daca_svg.append('g')
-	.attr('transform', 'translate(' + (w * 0.95) + ',' + (h / 2) + ')')
-	.attr("class", "daca_g");
+		.attr('transform', 'translate(' + (w * 0.95) + ',' + (daca_radius + 30) + ')')
+		.attr("class", "daca_g");
 
 	var daca_path = d3.arc()
 	.innerRadius(0)
@@ -419,29 +420,29 @@ function  draw_pie_chart(width, height) {
 				return (d.endAngle + d.startAngle)/2 > Math.PI ?
 						"end" : "start";
 		})
-		var daca_total = daca_svg.append("text")
+		
+	var daca_total = daca_svg.append("text")
 		.text("Daca Population: " + d3.format(".2s")(parseInt(daca_data[0].total)).replace(/k/,"K"))
 		.attr("fill", "black")
 		.attr("class", "daca")
 		.attr("text-anchor", "start")
-		.attr("transform", "translate(" + (w * 0.6) + "," + h + ")");
-
+		.attr("transform", "translate(" + (w * 0.6) + "," + (h * 0.8) + ")");
 
 	// DACA INELIGIBLE PIE ***********************************************************
 	var daca_ineligible_svg = d3.select("#pie_svg")
 		.append('svg')
 		.attr('class', 'pie daca_ineligible_pie')
 		.attr('width', "100%")
-		.attr('height', h + 20);
+		.attr('height', (daca_ineligible_radius * 2 + 100));
 
 	var daca_ineligible_g = daca_ineligible_svg.append('g')
-	.attr('transform', 'translate(' + (w * 0.95) + ',' + (h / 2) + ')')
+	.attr('transform', 'translate(' + (w * 0.95) + ',' + (daca_ineligible_radius + 30) + ')')
 	.style("background", "red")
 	.attr("class", "daca_ineligible_g");
 
 	var daca_ineligible_path = d3.arc()
-	.innerRadius(0)
-	.outerRadius(daca_ineligible_radius);
+		.innerRadius(0)
+		.outerRadius(daca_ineligible_radius);
 
 	var daca_ineligible_label = d3.arc()
 		.outerRadius(daca_ineligible_radius)
@@ -508,12 +509,13 @@ function  draw_pie_chart(width, height) {
 					return (d.endAngle + d.startAngle)/2 > Math.PI ?
 							"end" : "start";
 			})
-		var daca_ineligible_total = daca_ineligible_svg.append("text")
+
+	var daca_ineligible_total = daca_ineligible_svg.append("text")
 		.text("DACA-Ineligible Pop.: " + d3.format(".2s")(parseInt(daca_ineligible_data[0].total)))
 		.attr("fill", "black")
 		.attr("text-anchor", "start")
 		.attr("class", "undocumented")
-		.attr("transform", 'translate(' + (w * 0.55) + ',' + h + ')');
+		.attr("transform", 'translate(' + (w * 0.55) + ',' + (h * 0.8) + ')');
 
 
 	// US PIE ************************************************************************
@@ -521,17 +523,17 @@ function  draw_pie_chart(width, height) {
 		.append('svg')
 		.attr('class', 'pie us_pie')
 		.attr('width', "100%")
-		.attr('height', h + 50);
+		.attr('height', (us_radius * 2) + 100);
 
 	var us_total = us_svg.append("text")
-	.text("US Population: " + d3.format(".2s")(parseInt(us_data[0].total)))
-	.attr("fill", "black")
-	.attr("class", "US")
-	.attr("text-anchor", "left")
-	.attr("transform", "translate(" + (w * 0.6) + ", " + 200 + ")");
+		.text("US Population: " + d3.format(".2s")(parseInt(us_data[0].total)))
+		.attr("fill", "black")
+		.attr("class", "US")
+		.attr("text-anchor", "left")
+		.attr("transform", "translate(" + (w * 0.6) + ", " + (h * 1.45) + ")");
 
 	var us_g = us_svg.append('g')
-	.attr('transform', 'translate(' + (w * 0.95) + ',' + (h / 2) + ')')
+	.attr('transform', 'translate(' + (w * 0.95) + ',' + (us_radius + 30) + ')')
 	.style("background", "red")
 	.attr("class", "us_g");
 
